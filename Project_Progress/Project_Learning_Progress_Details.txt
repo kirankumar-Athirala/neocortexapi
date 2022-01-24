@@ -1,0 +1,60 @@
+Learning Spatial Pooler and Boosting through the following sources
+
+1. Boosting by HTM School youtube
+	Learning Outcome: Able to Understand Boosting and How it is used. Boosting is nothing but to helps to change the overlap 
+        score before the inhibition occurs giving less active columns a better chance to express themselves and diminishing columns that seem overactive .
+ 
+
+2. Hierarchal Temporal Memory by medium.com webpost
+
+Learning OutCome: 
+        1. The Main Idea is to understand the basic of Artificial General Intelligence we need to decrypt the intelligence of NeoCortex
+        Reverse Engineering of Neocortex consists of the following steps
+            1.Sparse Distributed Representation
+            2.Encoding
+            3.Spatial Pooling
+            4.Learning
+            5.Boosting
+            6.Temporal Pooling
+	2. HTM starts with the assumption that everything the neocortex does is based on memory and recall of sequences of patterns.
+        Sparse Distributed Representation:
+        	SDRs are the brain's language. The word "Sparse" refers to the fact that just a few neurons fire when doing a cognitive activity, 
+		i.e. if you take a picture of neurons in the brain, it is extremely likely that you will only observe less than 2% of neurons in an active state 
+                (Experimental evidence of Sparse firing in the neocortex). An SDR is made up of thousands of bits, with a tiny fraction of the bits being 1's and 
+                the remainder being 0's at any one moment. An SDR's bits correlate to neurons in the brain, with a 1 representing a moderately active neuron and 
+                a 0 representing a comparatively dormant neuron.
+        Encoding:
+ 		The encoder changes the data from its original format to an SDR that can be fed into an HTM system. 
+                The encoder is in charge of identifying which output bits should be ones and which should be zeros 
+                for a particular input value in order to capture the data's significant semantic properties. 
+                SDRs with similar input values should have a high degree of overlap.
+                Characteristics:
+			-Semantically similar data should result in SDRs with overlapping active bits.
+                        -Same input should always produce the same SDR as an output.
+                        -The output should have the same dimensionality for all the inputs.
+                        -The output should have similar sparsity for all inputs and have enough one bits to deal with noise and subsampling .
+      
+	Spatial Pooling:
+		
+             The spatial pooler takes the input data and converts it into active columns. 
+	     Assume that for a given input space, a spatial pooling attempts to learn the sequences, 
+             and that in order to learn the sequence, each micro column is linked to a particular number of synapses from the input. 
+             The overlap score is then calculated, and if it is more than some permeance or threshold number, the column is activated; otherwise, it is not. 
+	Learning:
+		Learning takes place exclusively in the Spatial Pooler's active columns. 
+                All connections that lie inside the input space will have their permeance value increased, 
+                implying that the synaptic connection between them will be strengthened, whereas any connections 
+                that fall outside of the input space will have their permeance value decremented. 
+                Learning Spatial Pooler outperforms Random Spatial Pooler in terms of learning.
+	Boosting:
+		In order for a column in a Spatial pooler to exist, the overlap score must be greater than a certain threshold number, 
+                whilst non-winning columns are prevented from learning. Only the winning columns have the ability to change their permanence values. 
+                Boosting helps to improve the overlap score before inhibition occurs, providing less active columns a greater chance to express themselves and reducing hyperactive columns.
+                Boosting on better allows for the learning of input data, which enhances efficiency. In other words, the columns with low overlap scores are boosted so that they may express themselves more effectively, 
+                whereas the columns with high overlap scores are blocked because they express themselves too.
+	Temporal Pooling:
+		We can grasp the sequential pattern throughout time thanks to Temporal Pooling. 
+                It learns the current column's sequences from the Spatial Pooler and guesses what spatial pattern will appear next depending on the temporal context of each input.
+			
+
+   	
