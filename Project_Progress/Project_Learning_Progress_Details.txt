@@ -57,4 +57,72 @@ Learning OutCome:
                 It learns the current column's sequences from the Spatial Pooler and guesses what spatial pattern will appear next depending on the temporal context of each input.
 			
 
-   	
+3. HTM Spatial Pooler by numenta youtube(Yuwei Cui)   	
+4. Paper on BIOLOGICAL AND MACHINE INTELLIGENCE by numenta
+	Learning OutCome:
+	        The Imporatant Terminologies and there usage in spatial pooler.
+				Column: An HTM region is organized in columns of cells. The SP operates at the column-level, where a
+						column of a cells function as a single computational unit.
+				Mini-column: See “Column”
+				Inhibition: The mechanism for maintaining sparse activations of neurons. In the SP this manifests as
+							columns inhibiting nearby columns from becoming active.
+				Inhibition radius: The size of a column’s local neighborhood, within which columns may inhibit each
+									other from becoming active.
+ 				Active duty cycle: A moving average denoting the frequency of column activation.
+				Overlap duty cycle: A moving average denoting the frequency of the column’s overlap value being at
+									least equal to the proximal segment activation threshold.
+				Receptive field: The input space that a column can potentially connect to.
+				Permanence value: indicates the amount of growth between a mini-column in the Spatial Pooling
+									algorithm and one of the cells in its receptive field
+				Permanence threshold: If a synapse’s permanence is above this value, it is considered fully connected.
+									  Acceptable values are [0,1].
+				Synapse: A junction between cells. In the Spatial Pooling algorithm, synapses on a column’s dendritic
+						 segment connect to bits in the input space. A synapse can be in the following states:
+						   Connected—permanence is above the threshold.
+						   Potential—permanence is below the threshold.
+						   Unconnected—does not have the ability to connect.
+			Boosting:
+				Boosting can be helpful in driving columns to compete for activation. Boosting is monitored by both the activity
+				and overlap duty cycles (activeDutyCycle(c) and overlapDutyCycle(c), respectively). Following inhibition, if a
+				column’s active duty cycle falls below the active duty cycles of neighboring columns, then its internal boost
+				factor (boost(c)) will increase above one. If a column's active duty cycle arises above the active duty cycles of
+				neighboring columns, its boost factor will decrease below one This helps drive the competition amongst
+				columns and achieve the spatial pooling goal of using all the columns. Before inhibition, if a column’s overlap
+				duty cycle is below its minimum acceptable value (calculated dynamically as a function of
+				minPctOverlapDutyCycle and the overlap duty cycle of neighboring columns), then all its permanence values
+				are boosted by the increment amount. A subpar duty cycle implies either a column's previously learned inputs
+				are no longer ever active, or the vast majority of them have been "hijacked" by other columns. By raising all
+				synapse permanences in response to a subpar duty cycle before inhibition, we enable a column to search for
+				new inputs.
+			From the above explination we can confirm that activeDutyCycle and overlapDutyCycle are some of the parameters that plays crucial role in Boosting.
+			
+			Imporatant parameters and their usage in spatial pooler and Boosting
+			
+				1. columnCount :The total number of columns in the Spatial Pooling algorithm, and the HTM
+							 region. This is task dependent but we recommend a minimum value of 2048.
+				2. overlap(c): The Spatial Pooling algorithm overlap of column c with a particular input
+							pattern.
+				3. activeColumns(t): List of column indices that are winners due to bottom-up input. 
+				4. inhibitionRadius: Average connected receptive field size of the columns.
+				5. boost(c): The boost value for column c as computed during learning – used to increase
+						  the overlap value for inactive columns. 
+				6. boostStrength: A number greater or equal than 0.0 to control the strength of boosting. No
+								boosting is applied if boostStrength=0.
+				7. synapse: A data structure representing a synapse, containing a permanence value and
+                         the source input index. 
+				8. activeDutyCycle(c): A sliding average representing how often column c has been active after
+									inhibition (e.g. over the last 1000 iterations). 
+				9. overlapDutyCycle(c): A sliding average representing how often column c has had significant overlap
+									(i.e. greater than stimulusThreshold) with its inputs (e.g. over the last 1000
+									 iterations). 
+				10. updateActiveDutyCycle(c): Computes a moving average of how often column c has been active after
+										  inhibition.
+				11. updateOverlapDutyCycle(c): Computes a moving average of how often column c has overlap greater than
+											stimulusThreshold. 
+				12. maxDutyCycle(cols): Returns the maximum active duty cycle of the columns in the given list of
+									columns.
+				13. boostFunction(c): Returns the boost value of a column. The boost value is a positive scalar
+								value. It is above one if the active duty cycle is above the mean active duty
+								cycles of neighboring columns. It is less than one if a column has higher active
+								duty cycle than its neighbors.
+			
