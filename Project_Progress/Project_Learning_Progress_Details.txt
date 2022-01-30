@@ -167,4 +167,45 @@ Learning OutCome:
 			causing the Spatial Pooler to forget the input. To address this issue, the Spatial Pooler now includes 
 			a new homeostatic plasticity controller that turns off boosting once the learning has reached a stable state. 
 			The output SDRs of the Spatial Pooler do not change over time, according to the research.
-			
+6. Improved HTM Spatial Pooler with Homeostatic Plasticity Control -Professor Dobric
+	Learning OutCome:
+		1. The Spatial Pooler works using mini-columns that are linked to sensory inputs . 
+		   It is in charge of learning spatial patterns by encoding them into a sparse distributed representation (SDR). 
+		   The SDR that was constructed to represent the encoded spatial pattern is then utilized as input for the Temporal Memory (TM) method.
+		2. The TM is in charge of learning sequences from the SDR. The present version of the Spatial Pooler is instable, according to the results of this research. 
+		   Learned patterns will be forgotten and re-learned during the learning process. The Spatial Pooler oscillates between stable and unstable stable, according on the results. 
+		   Furthermore, investigations reveal that the instability is linked to a single pattern rather than a group of patterns.
+		3. The majority of the trials were carried out using 2048 columns. The scalar encoder was utilized in this example to encode input scalar values supplied to the Spatial Pooler throughout the learning phase. 
+		   Values ranging from 0 to 100 were utilized as input. Every input value was encoded with 200 bits before being presented to the Spatial Pooler, and each value is encoded with 15 non-zero bits.
+		4. The Spatial Pooler method uses a column boosting technique inspired by homeostatic plasticity. 
+		   This process affects the balance of excitation and inhibition in brain cells and is likely vital for maintaining the cortical state of stability. 
+		   Homeostatic plasticity ensures the functional stability of neuronal networks. It balances network excitation and inhibition and coordinates circuit connection changes.
+		5. The Spatial Pooler's boosting keeps track of column activity and ensures that all columns are used consistently throughout all patterns. 
+		   Because this process is active all of the time, it can increase columns that have previously learnt SDRs. 
+		   After then, the Spatial Pooler will "forget" certain learnt patterns for a short time. 
+		   If the SP is shown the lost pattern again, it will begin to learn it again.
+		6. The boosting was disabled by setting DUTY_CYCLE_PERIOD and MAX_BOOST to zero value. These two values disable boosting algorithm in the Spatial Pooler.
+		   Results show that the SP with these parameters produces stable SDRs. The SP learns the pattern and encodes it to SDR in few iterations (typically 2-3) and keeps it unchanged
+		   (stable) during the entire life cycle of the SP instance.By following this result, the stable SP can be achieved by disabling of the boosting algorithm.
+		7. Unfortunately, without the boosting mechanism, the SP generates SDR-s with unpredictive number of active mini-columns.
+		8. The further processing of memorized SDR-s will be badly effected if the number of active mini-columns in an SDR for distinct inputs is considerably variable. 
+		   The computation of the overlap between brain cells, synapses, or mini-columns is used in most operations of Hierarchical Temporal Memory . In this situation, 
+		   SDRs with a large number of active columns would statistically yield more overlaps than SDRs with fewer active cells, which is not balanced.
+		9. The parameter NUM_ACTIVE_COLUMNS_PER_INH_AREA defines the percentage of columns in the inhibition area, which will be activated by the encoding of every single input pattern. Inspired by theneocortex, this value is typically set on 2% (Hawkins,
+		   Subtei, 2016). By using the global inhibition in these experiments by the entire column set of 2048 columns the SP will generate SDRs with approx. 40 activecolumns.
+		   The boosting mechanism inspired by homeostatic plasticity in neo-cortex solves this problem by consequent boosting of passive minicolumns\and inhibiting too active mini-columns.
+		   As long the learning is occurring, the SP will continuously boost mini-columns. Every time the boosting takes a place, some learned patterns (SDRs) might be forgotten, and learning will continue when the same pattern appears the next time.
+		10. It may be concluded that the boosting process has an impact on the SP's stability. The SP can reach a stable state,
+			but SDRs with a drastically different number of active minicolumns will result. If boosting is turned on, the SP will activate mini-columns equitably, but the learning will be unstable.
+	    11. Spatial can also benefit from the deactivation of the increase in homeostatic plasticity in the cortical layer L4. 
+		    The specific workings of this system are currently unknown. However, by using what has been learned in this area,
+			a comparable or identical process inside the SP may be implemented. This mechanism already exists in the HTM as boosting and inhibition algorithms that work on the mini-column level rather than the cell level inside the mini-column.
+			SP does not use individual cells since it acts on the population of neural cells in mini-columns. Individual cells are more significant in the Temporal Memory algorithm than you would think.
+		12. The fundamental concept behind this study is to add an extra algorithm to SP that does not interfere with the present SP method in order to stabilize the SP and maintain exploiting the plasticity. 
+		    The Homeostatic Plasticity Controller, a new component, implements the method used by the expanded Spatial Pooler. The controller is "connected" to the Spatial Pooler's current implementation. 
+		    The input pattern and related SDR are provided from the SP to the controller after each iteration's computation. The controller keeps the boosting going until the SP reaches a stable state, which is measured in repetitions. 
+			During this period, the SP is in a stage known as "new-born" and will yield outcomes.
+		13. When the SP reaches a stable state, the new algorithm turns off the boosting and informs the application of the change. 
+		    The controller keeps track of how many mini-columns are present in the overall pattern. 
+			The SP has entered the stable stage when the controller detects that all minicolumns are almost evenly employed and all visible SDRs are encoded with roughly the same amount of active mini-columns. 
+			The SP will then exit the neonatal stage and resume normal operations, albeit without the boosting.
