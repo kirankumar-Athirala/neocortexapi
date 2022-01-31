@@ -119,7 +119,9 @@ namespace NeoCortexApiSample
                 });
 
             // It creates the instance of Spatial Pooler Multithreaded version.
-            SpatialPooler sp = new SpatialPoolerMT(hpa);
+            //SpatialPooler sp = new SpatialPoolerMT(hpa);
+            SpatialPooler sp = new SpatialPooler(hpa);
+            
 
             // Initializes the 
             sp.Init(mem, new DistributedMemory() { ColumnDictionary = new InMemoryDistributedDictionary<int, NeoCortexApi.Entities.Column>(1) });
@@ -160,6 +162,7 @@ namespace NeoCortexApiSample
 
             for (int cycle = 0; cycle < maxSPLearningCycles; cycle++)
             {
+                Console.WriteLine($"Cycle  ** {cycle} ** Stability: {isInStableState}");
                 Debug.WriteLine($"Cycle  ** {cycle} ** Stability: {isInStableState}");
 
                 //
@@ -181,6 +184,7 @@ namespace NeoCortexApiSample
                     similarity = MathHelpers.CalcArraySimilarity(activeColumns, prevActiveCols[input]);
 
                     Debug.WriteLine($"[cycle={cycle.ToString("D4")}, i={input}, cols=:{actCols.Length} s={similarity}] SDR: {Helpers.StringifyVector(actCols)}");
+                    Console.WriteLine($"[cycle={cycle.ToString("D4")}, i={input}, cols=:{actCols.Length} s={similarity}] SDR: {Helpers.StringifyVector(actCols)}");
 
                     prevActiveCols[input] = activeColumns;
                     prevSimilarity[input] = similarity;

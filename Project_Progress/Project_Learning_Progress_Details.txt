@@ -209,3 +209,7 @@ Learning OutCome:
 		    The controller keeps track of how many mini-columns are present in the overall pattern. 
 			The SP has entered the stable stage when the controller detects that all minicolumns are almost evenly employed and all visible SDRs are encoded with roughly the same amount of active mini-columns. 
 			The SP will then exit the neonatal stage and resume normal operations, albeit without the boosting.
+
+7. Started With running spatialpatternlearning experiment with no change in parameter values 
+		OutCome:
+			The SDR get stabilized at 97th Iteration.
