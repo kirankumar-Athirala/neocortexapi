@@ -213,3 +213,9 @@ Learning OutCome:
 7. Started With running spatialpatternlearning experiment with no change in parameter values 
 		OutCome:
 			The SDR get stabilized at 97th Iteration.
+8. Started Running SpatialPatternLearning experiment:
+	case-1:
+		Changed MaxBoost to 10 but didn't affcet the stablility it still taken 97th iteration to reach stability
+	case-2:
+		changed minOctOverlapCycles to 0 and maxBoost to 0 then it taken 112th iteration to reach stability
+	Need to still explore why changing maxBoost alone didn't have affect on stability
