@@ -219,3 +219,6 @@ Learning OutCome:
 	case-2:
 		changed minOctOverlapCycles to 0 and maxBoost to 0 then it taken 112th iteration to reach stability
 	Need to still explore why changing maxBoost alone didn't have affect on stability
+	case-3:
+		changed minOctOverlapCycles to 0 and maxBoost to 2 then it taken 91th iteration to reach stability
+	so increasing Max_Boost results decreasing the iterations required to reach stability
