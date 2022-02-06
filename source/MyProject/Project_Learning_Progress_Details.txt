@@ -222,3 +222,7 @@ Learning OutCome:
 	case-3:
 		changed minOctOverlapCycles to 0 and maxBoost to 2 then it taken 91th iteration to reach stability
 	so increasing Max_Boost results decreasing the iterations required to reach stability
+	case-4:
+		Changed minOctOverlapCycles to 5 and maxBoost to 5(unchanged)
+		The Stability first reached at 97th iteration and again it eneters into INSTABLE STATE , then again it reaches stability at 258th iteration.
+		Need to investigate why it becoming unstable in middle and again attains stability.
