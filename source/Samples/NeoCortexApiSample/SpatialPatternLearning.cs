@@ -22,8 +22,8 @@ namespace NeoCortexApiSample
 
             // Used as a boosting parameters
             // that ensure homeostatic plasticity effect.
-            double minOctOverlapCycles = 10;
-            double maxBoost = 5;
+            double minOctOverlapCycles = 1;
+            double maxBoost = 1;
 
             // We will use 200 bits to represent an input vector (pattern).
             int inputBits = 200;
@@ -37,7 +37,8 @@ namespace NeoCortexApiSample
             {
                 CellsPerColumn = 10,
                 MaxBoost = maxBoost,
-                DutyCyclePeriod = 100,
+                DutyCyclePeriod = 150000,
+                IsBumpUpWeakColumnsDisabled =true,
                 MinPctOverlapDutyCycles = minOctOverlapCycles,
 
                 GlobalInhibition = true,
