@@ -226,3 +226,16 @@ Learning OutCome:
 		Changed minOctOverlapCycles to 5 and maxBoost to 5(unchanged)
 		The Stability first reached at 97th iteration and again it eneters into INSTABLE STATE , then again it reaches stability at 258th iteration.
 		Need to investigate why it becoming unstable in middle and again attains stability.
+9. Analysis of UpdateBoostFactors method:
+	1.updated maxBoost parameter value to 1,5 and 10 with DutyCyclePeriod parameter to 1000 for all the runs.
+		The stability reached at cycle-96 and iteration 2 but again it becames unstable at cycle 181 and iteration 66. It again attained stable state at cycle-257 and iteration 93
+		The same is observed for all the three case with maxBoost 1,5 and 10.
+	
+	2.But again ran the experiment with updating maxBoost parameter value to 1,5 and 10 with DutyCyclePeriod parameter to 150000 and IsBumpUpWeakColumnsDisabled to True for all the runs.
+		case-1: MaxBoost=1 and DutyCyclePeriod=150000 and IsBumpUpWeakColumnsDisabled=True
+			The stability reached at cycle-55 and iteration 0 but again it becames unstable at cycle 61 and iteration 18. It again attained stable state at cycle-111 and iteration 19 and 
+			again it becames unstable at cycle 140 and iteration 99. It again attained stable state at cycle-191 and iteration 8 after that it didn't oscilated.
+		For MaxBoost=5,7,10 and DutyCyclePeriod=150000 and IsBumpUpWeakColumnsDisabled=True
+			The stability reached at cycle-111 and iteration 71 but again it becames unstable at cycle 135 and iteration 7. It again attained stable state at cycle-185 and iteration 8. after that it didn't oscilated.
+			
+		From the above analysis we observed that for maxboost=1 , we can attain stability quicky compared to 5 and 7 and 10, but it was going into INSTABLE state and again atatining stability
