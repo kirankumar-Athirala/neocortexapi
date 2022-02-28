@@ -6,6 +6,7 @@ using NeoCortexApi.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace NeoCortexApiSample
@@ -23,7 +24,7 @@ namespace NeoCortexApiSample
             // Used as a boosting parameters
             // that ensure homeostatic plasticity effect.
             double minOctOverlapCycles = 1;
-            double maxBoost = 10;
+            double maxBoost = 5.0;
 
             // We will use 200 bits to represent an input vector (pattern).
             int inputBits = 200;
@@ -37,8 +38,8 @@ namespace NeoCortexApiSample
             {
                 CellsPerColumn = 10,
                 MaxBoost = maxBoost,
-                DutyCyclePeriod = 150000,
-                IsBumpUpWeakColumnsDisabled =true,
+                DutyCyclePeriod = 100,
+                //IsBumpUpWeakColumnsDisabled =true,
                 MinPctOverlapDutyCycles = minOctOverlapCycles,
 
                 GlobalInhibition = true,
@@ -159,35 +160,39 @@ namespace NeoCortexApiSample
 
             // Learning process will take 1000 iterations (cycles)
             int maxSPLearningCycles = 1000;
-
-            for (int cycle = 0; cycle < maxSPLearningCycles; cycle++)
+            var filepath = "Results.csv";
+            using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
+                 FileMode.Create, FileAccess.Write)))
             {
-                Console.WriteLine($"Cycle  ** {cycle} ** Stability: {isInStableState}");
-                Debug.WriteLine($"Cycle  ** {cycle} ** Stability: {isInStableState}");
-
-                //
-                // This trains the layer on input pattern.
-                foreach (var input in inputs)
+                writer.WriteLine("sep=:");
+                writer.WriteLine("cycle:Stability: i: cols: s:SDR ");
+                for (int cycle = 0; cycle < maxSPLearningCycles; cycle++)
                 {
-                    double similarity;
+                    Debug.WriteLine($"Cycle  ** {cycle} ** Stability: {isInStableState}");
 
-                    // Learn the input pattern.
-                    // Output lyrOut is the output of the last module in the layer.
-                    // 
-                    var lyrOut = cortexLayer.Compute((object)input, true) as int[];
+                    //
+                    // This trains the layer on input pattern.
+                    foreach (var input in inputs)
+                    {
+                        double similarity;
 
-                    // This is a general way to get the SpatialPooler result from the layer.
-                    var activeColumns = cortexLayer.GetResult("sp") as int[];
+                        // Learn the input pattern.
+                        // Output lyrOut is the output of the last module in the layer.
+                        // 
+                        var lyrOut = cortexLayer.Compute((object)input, true) as int[];
 
-                    var actCols = activeColumns.OrderBy(c => c).ToArray();
+                        // This is a general way to get the SpatialPooler result from the layer.
+                        var activeColumns = cortexLayer.GetResult("sp") as int[];
 
-                    similarity = MathHelpers.CalcArraySimilarity(activeColumns, prevActiveCols[input]);
+                        var actCols = activeColumns.OrderBy(c => c).ToArray();
 
-                    Debug.WriteLine($"[cycle={cycle.ToString("D4")}, i={input}, cols=:{actCols.Length} s={similarity}] SDR: {Helpers.StringifyVector(actCols)}");
-                    Console.WriteLine($"[cycle={cycle.ToString("D4")}, i={input}, cols=:{actCols.Length} s={similarity}] SDR: {Helpers.StringifyVector(actCols)}");
+                        similarity = MathHelpers.CalcArraySimilarity(activeColumns, prevActiveCols[input]);
 
-                    prevActiveCols[input] = activeColumns;
-                    prevSimilarity[input] = similarity;
+                        Debug.WriteLine($"[cycle={cycle.ToString("D4")}, i={input}, cols=:{actCols.Length} s={similarity}] SDR: {Helpers.StringifyVector(actCols)}");
+                        writer.WriteLine($"{cycle.ToString("D4")}:{isInStableState}:{input},{actCols.Length}:{similarity}:{Helpers.StringifyVector(actCols)}");
+                        prevActiveCols[input] = activeColumns;
+                        prevSimilarity[input] = similarity;
+                    }
                 }
             }
         }
