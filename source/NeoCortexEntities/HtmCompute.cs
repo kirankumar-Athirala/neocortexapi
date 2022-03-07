@@ -385,7 +385,7 @@ namespace NeoCortexApi
             ArrayUtils.FillArray(minCoord, ArrayUtils.Max(htmConfig.InputModuleTopology.Dimensions));
 
             //
-            // It takes all connected synapses
+            // Traverse all connected input neurons.
             for (int i = 0; i < connected.Length; i++)
             {
                 var coordinates = AbstractFlatMatrix.ComputeCoordinates(htmConfig.InputModuleTopology.Dimensions.Length,
@@ -416,31 +416,33 @@ namespace NeoCortexApi
         /// inhibition phase, columns without such minimal number of connections, even
         /// if all the input bits they are connected to turn on, have no chance of
         /// obtaining the minimum threshold. For such columns, the permanence values
-        /// are increased until the minimum number of connections are formed.        /// 
+        /// are increased until the minimum number of connections are formed.        
         /// </summary>
         /// <param name="htmConfig"></param>
-        /// <param name="perm"></param>
-        /// <param name="maskPotential"></param>
-        public static void RaisePermanenceToThreshold(HtmConfig htmConfig, double[] perm, int[] maskPotential)
+        /// <param name="permanences">An array of permanence values for a column. The array is "dense", i.e. it contains an entry for each input bit, even if the permanence value is 0.</param>
+        /// <param name="potentialIndexes">The indexes of inputs in the specified <see cref="Column"/>'s pool.</param>
+        public static void BoostProximalSegment(HtmConfig htmConfig, double[] permanences, int[] potentialIndexes)
         {
-            if (maskPotential.Length < htmConfig.StimulusThreshold)
+            // TODO. Consider moving this condition to the initialization of the SP.
+            if (potentialIndexes.Length < htmConfig.StimulusThreshold)
             {
                 throw new ArgumentException("StimulusThreshold as number of required connected synapses cannot be greather than number of neurons in receptive field.");
             }
 
-            ArrayUtils.EnsureBetweenMinAndMax(perm, htmConfig.SynPermMin, htmConfig.SynPermMax);
+            ArrayUtils.EnsureBetweenMinAndMax(permanences, htmConfig.SynPermMin, htmConfig.SynPermMax);
+
             while (true)
             {
-                // Gets number of synapses with permanence value grather than 'PermConnected'.
-                int numConnected = ArrayUtils.ValueGreaterThanCountAtIndex(htmConfig.SynPermConnected, perm, maskPotential);
+                // Gets number of synapses with permanence value grather than 'SynPermConnected' = Connected Synapses.
+                int numConnected = ArrayUtils.GreaterThanAtIndex(htmConfig.SynPermConnected, permanences, potentialIndexes);
 
-                // If enough synapces are connected, all ok.
+                // If enough synapses are connected, all ok.
                 if (numConnected >= htmConfig.StimulusThreshold)
                     return;
 
                 // If number of connected synapses is below threshold, 
                 // then permanences of all synapses will be incremented (raised) until column is connected.
-                ArrayUtils.RaiseValuesBy(htmConfig.SynPermBelowStimulusInc, perm, maskPotential);
+                ArrayUtils.RaiseValuesBy(htmConfig.SynPermBelowStimulusInc, permanences, potentialIndexes);
             }
         }
 
@@ -456,7 +458,7 @@ namespace NeoCortexApi
         }
 
         /// <summary>
-        /// This method updates the permanence matrix with a column's new permanence values. The column is identified by its index, which reflects the row in
+        /// This method updates the permanences with a column's new permanence values. The column is identified by its index, which reflects the row in
         /// the matrix, and the permanence is given in 'sparse' form, i.e. an array whose members are associated with specific indexes. It is in charge of 
         /// implementing 'clipping' - ensuring that the permanence values are always between 0 and 1 - and 'trimming' - enforcing sparseness by zeroing out
         /// all permanence values below 'synPermTrimThreshold'. It also maintains the consistency between 'permanences' (the matrix storing the permanence values), 
@@ -465,7 +467,7 @@ namespace NeoCortexApi
         /// </summary>
         /// <param name="htmConfig">the configuration used in <see cref="Connections"/>.</param>
         /// <param name="perm">An array of permanence values for a column. The array is "dense", i.e. it contains an entry for each input bit, even if the permanence value is 0.</param>
-        /// <param name="column">The column in the permanence, potential and connectivity matrices.</param>
+        /// <param name="column">The column to be updated.</param>
         /// <param name="potentialIndexes">The indexes of inputs in the specified <see cref="Column"/>'s pool.</param>
         /// <param name="raisePerm">a boolean value indicating whether the permanence values</param>
         public static void UpdatePermanencesForColumn(HtmConfig htmConfig, double[] perm, Column column, int[] potentialIndexes, bool raisePerm)
@@ -473,11 +475,11 @@ namespace NeoCortexApi
             if (raisePerm)
             {
                 // During every learning cycle, this method ensures that every column 
-                // has enough connections ('SynPermConnected') to iput space.
-                RaisePermanenceToThreshold(htmConfig, perm, potentialIndexes);
+                // has enough connections (perm > SynPermConnected) to the iput space.
+                BoostProximalSegment(htmConfig, perm, potentialIndexes);
             }
 
-            // Here we set all permanences to 0 
+            // Here we set all permanences to 0 if the permanence value is less than SynPermTrimThreshold.
             ArrayUtils.LessOrEqualXThanSetToY(perm, htmConfig.SynPermTrimThreshold, 0);
 
             ArrayUtils.EnsureBetweenMinAndMax(perm, htmConfig.SynPermMin, htmConfig.SynPermMax);

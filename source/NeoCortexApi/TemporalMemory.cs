@@ -158,7 +158,6 @@ namespace NeoCortexApi
 
         /// <summary>
         /// Calculate the active cells, using the current active columns and dendrite segments. Grow and reinforce synapses.
-        /// 
         /// <para>
         /// Pseudocode:<br/>
         ///   for each column<br/>
@@ -523,7 +522,7 @@ namespace NeoCortexApi
         /// <see cref="BurstingResult.Cells"/>:      list of the processed column's cells<br/>
         /// <see cref="BurstingResult.BestCell"/>:    the best cell
         /// </returns>
-        public BurstingResult BurstColumn(Connections conn, Column column, List<DistalDendrite> matchingSegments,
+        protected BurstingResult BurstColumn(Connections conn, Column column, List<DistalDendrite> matchingSegments,
             ICollection<Cell> prevActiveCells, ICollection<Cell> prevWinnerCells, double permanenceIncrement, double permanenceDecrement,
                 Random random, bool learn)
         {
@@ -703,7 +702,7 @@ namespace NeoCortexApi
             //DD 
             foreach (Synapse synapse in segment.Synapses)
             {
-                Cell presynapticCell = synapse.getPresynapticCell();
+                Cell presynapticCell = synapse.GetPresynapticCell();
                 int index = removingCandidates.IndexOf(presynapticCell);
                 if (index != -1)
                 {
@@ -750,7 +749,7 @@ namespace NeoCortexApi
 
                 //
                 // If synapse's presynaptic cell was active in the previous cycle then streng it.
-                if (prevActiveCells.Contains(presynapticCellSynapse.getPresynapticCell()))
+                if (prevActiveCells.Contains(presynapticCellSynapse.GetPresynapticCell()))
                 {
                     permanence += permanenceIncrement;
                 }

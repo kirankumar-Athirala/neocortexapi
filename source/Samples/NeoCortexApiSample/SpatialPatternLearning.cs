@@ -42,13 +42,15 @@ namespace NeoCortexApiSample
                 //IsBumpUpWeakColumnsDisabled =true,
                 MinPctOverlapDutyCycles = minOctOverlapCycles,
 
-                GlobalInhibition = true,
+                GlobalInhibition = false,
                 NumActiveColumnsPerInhArea = 0.02 * numColumns,
                 PotentialRadius = (int)(0.15 * inputBits),
                 LocalAreaDensity = -1,
                 ActivationThreshold = 10,
+                
                 MaxSynapsesPerSegment = (int)(0.01 * numColumns),
-                Random = new ThreadSafeRandom(42)
+                Random = new ThreadSafeRandom(42),
+                StimulusThreshold=10,
             };
 
             double max = 100;
@@ -66,6 +68,7 @@ namespace NeoCortexApiSample
                 { "ClipInput", false},
                 { "MaxVal", max}
             };
+
 
             EncoderBase encoder = new ScalarEncoder(settings);
 
@@ -120,9 +123,7 @@ namespace NeoCortexApiSample
                 });
 
             // It creates the instance of Spatial Pooler Multithreaded version.
-            //SpatialPooler sp = new SpatialPoolerMT(hpa);
             SpatialPooler sp = new SpatialPooler(hpa);
-            
 
             // Initializes the 
             sp.Init(mem, new DistributedMemory() { ColumnDictionary = new InMemoryDistributedDictionary<int, NeoCortexApi.Entities.Column>(1) });

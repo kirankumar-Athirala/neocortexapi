@@ -315,10 +315,10 @@ namespace NeoCortexApi.Entities
         /// <summary>
         /// Computes the number of active and potential synapses of the each segment for a given input.
         /// </summary>
-        /// <param name="activeCellsInCurrentCycle">Cells that are currentlly spiking.</param>
+        /// <param name="activeCellsFromPrevCycle">Cells that are currentlly spiking as calculated in the previous cycle.</param>
         /// <param name="connectedPermanence"></param>
         /// <returns></returns>
-        public static SegmentActivity ComputeActivity(ICollection<Cell> activeCellsInCurrentCycle, double connectedPermanence)
+        public static SegmentActivity ComputeActivity(ICollection<Cell> activeCellsFromPrevCycle, double connectedPermanence)
         {
             Dictionary<int, int> numOfActiveSynapses = new Dictionary<int, int>();
             Dictionary<int, int> numOfPotentialSynapses = new Dictionary<int, int>();
@@ -328,7 +328,7 @@ namespace NeoCortexApi.Entities
             //
             // Step through all currently active cells.
             // Find synapses that points to each active cell (receptor synapses).
-            foreach (Cell activeCell in activeCellsInCurrentCycle)
+            foreach (Cell activeCell in activeCellsFromPrevCycle)
             {
                 //
                 // This cell is the active in the current cycle. 
@@ -680,7 +680,7 @@ namespace NeoCortexApi.Entities
         /// <param name="synapse">the synapse to remove</param>
         public void RemoveSynapseFromPresynapticMap(Synapse synapse)
         {
-            Cell cell = synapse.getPresynapticCell();
+            Cell cell = synapse.GetPresynapticCell();
             cell.ReceptorSynapses.Remove(synapse);
             //DD
             //LinkedHashSet<Synapse> presynapticSynapses;
@@ -868,6 +868,19 @@ namespace NeoCortexApi.Entities
             return list;
         }
 
+
+        /// <summary>
+        /// Traces permanences of all columns.
+        /// </summary>
+        public void TraceColumnPermanences()
+        {
+            foreach (var col in GetColumns())
+            {
+                col.Trace();
+            }
+        }
+
+
         /// <summary>
         /// Converts a <see cref="Collection{T}"/> of <see cref="Cell"/>s to a list of cell indexes.
         /// </summary>
@@ -959,11 +972,55 @@ namespace NeoCortexApi.Entities
             }
             return retVal;
         }
+
+        /// <summary>
+        /// Gets the statistics of the current memory state.
+        /// </summary>
+        /// <returns></returns>
+        public HtmStatistics GetStatistics()
+        {
+            HtmStatistics stats = new HtmStatistics();
+
+            double permAvgSum = 0.0;
+
+            double max = 0.0;
+
+            double min = 2.0;
+
+            int cnt = 0;
+
+            for (int i = 0; i < this.HtmConfig.NumColumns; i++)
+            {
+                Column column = this.GetColumn(i);
+
+                var colStats = column.GetStatistics(this.HtmConfig);
+
+                if (colStats.MaxPermanence > max)
+                    max = colStats.MaxPermanence;
+
+                if (colStats.MinPermanence < min)
+                    min = colStats.MinPermanence;
+
+                stats.ConnectedSynapses += colStats.ConnectedSynapses;
+                stats.Synapses += colStats.Synapses;
+                permAvgSum += colStats.AvgPermanence;
+
+                cnt++;
+            }
+
+            stats.AvgPermanence= permAvgSum/cnt;
+            stats.MaxPermanence = max;
+            stats.MinPermanence = min;
+            stats.SynapticActivity = (double)stats.ConnectedSynapses / (double)stats.Synapses;
+
+            return stats;
+        }
         #endregion
-        /**
-         * High 
-         * e output useful for debugging
-         */
+      
+        /// <summary>
+        /// Used for debugging.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -1199,8 +1256,8 @@ namespace NeoCortexApi.Entities
             HtmSerializer2 ser = new HtmSerializer2();
 
             ser.SerializeBegin(nameof(Connections), writer);
- 
-            ser.SerializeValue(this.version, writer); 
+
+            ser.SerializeValue(this.version, writer);
             ser.SerializeValue(this.SpIterationNum, writer);
             ser.SerializeValue(this.SpIterationLearnNum, writer);
             ser.SerializeValue(this.m_TMIteration, writer);
@@ -1247,13 +1304,13 @@ namespace NeoCortexApi.Entities
             {
                 this.m_HtmConfig.Serialize(writer);
             }
-            
+
             if (this.HtmConfig != null)
             {
                 this.HtmConfig.Serialize(writer);
             }
 
-            
+
             ser.SerializeEnd(nameof(Connections), writer);
         }
 
@@ -1271,7 +1328,7 @@ namespace NeoCortexApi.Entities
                 }
                 else if (data == ser.ReadBegin("CellArray"))
                 {
-                    mem.Cells = ser.DeserializeCellArray(data,sr);
+                    mem.Cells = ser.DeserializeCellArray(data, sr);
                 }
                 else if (data == ser.ReadBegin(nameof(DistalDendrite)))
                 {
