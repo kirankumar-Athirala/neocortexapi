@@ -1223,7 +1223,7 @@ namespace NeoCortexApi
             // will not be stimulated.
             ArrayUtils.SetIndexesTo(boostFactors, idxOfActiveColumns.ToArray(), 1.0d);
 
-            c.BoostFactors = boostInterim;
+            c.BoostFactors = boostFactors;
         }
 
 
