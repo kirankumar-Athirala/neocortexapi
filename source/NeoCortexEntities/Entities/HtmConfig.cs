@@ -228,7 +228,14 @@ namespace NeoCortexApi.Entities
         /// 2 end points.
         /// </summary>
         public double MaxBoost { get; set; } = 10.0;
-
+        /// <summary>
+        /// Counter for testing purpose
+        /// </summary>
+        public int count { get; set; } = 0;
+        /// <summary>
+        /// Counter for testing purpose
+        /// </summary>
+        public int cyclesVal { get; set; } = 0;
         /// <summary>
         /// Controls if bumping-up of weak columns shell be done.
         /// </summary>
@@ -371,6 +378,7 @@ namespace NeoCortexApi.Entities
         /// </summary>
         public Random Random { get; set; }
 
+
         /// <summary>
         /// Set default value for parameters of <see cref="HtmConfig"/>
         /// </summary>
@@ -413,6 +421,7 @@ namespace NeoCortexApi.Entities
             this.MaxBoost = 10.0;
             this.WrapAround = true;
             this.Random = new ThreadSafeRandom(42);
+            this.count = 0;
         }
 
         public void ClearModuleTopology()

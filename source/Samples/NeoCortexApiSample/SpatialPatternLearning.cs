@@ -15,8 +15,10 @@ namespace NeoCortexApiSample
     /// Implements an experiment that demonstrates how to learn spatial patterns.
     /// SP will learn every presented input in multiple iterations.
     /// </summary>
+    
     public class SpatialPatternLearning
     {
+
         public void Run()
         {
             Console.WriteLine($"Hello NeocortexApi! Experiment {nameof(SpatialPatternLearning)}");
@@ -25,7 +27,7 @@ namespace NeoCortexApiSample
             // that ensure homeostatic plasticity effect.
             double minOctOverlapCycles = 1;
             double maxBoost = 5.0;
-
+            int countval = 0;
             // We will use 200 bits to represent an input vector (pattern).
             int inputBits = 200;
 
@@ -38,6 +40,7 @@ namespace NeoCortexApiSample
             {
                 CellsPerColumn = 10,
                 MaxBoost = maxBoost,
+                count = countval,
                 DutyCyclePeriod = 100,
                 //IsBumpUpWeakColumnsDisabled =true,
                 MinPctOverlapDutyCycles = minOctOverlapCycles,
@@ -47,10 +50,10 @@ namespace NeoCortexApiSample
                 PotentialRadius = (int)(0.15 * inputBits),
                 LocalAreaDensity = -1,
                 ActivationThreshold = 10,
-                
+
                 MaxSynapsesPerSegment = (int)(0.01 * numColumns),
                 Random = new ThreadSafeRandom(42),
-                StimulusThreshold=10,
+                StimulusThreshold = 10,
             };
 
             double max = 100;
@@ -161,6 +164,7 @@ namespace NeoCortexApiSample
 
             // Learning process will take 1000 iterations (cycles)
             int maxSPLearningCycles = 1000;
+            // Writing output into Results.csv
             var filepath = "Results.csv";
             using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                  FileMode.Create, FileAccess.Write)))
@@ -169,14 +173,20 @@ namespace NeoCortexApiSample
                 writer.WriteLine("cycle:Stability: i: cols: s:SDR ");
                 for (int cycle = 0; cycle < maxSPLearningCycles; cycle++)
                 {
+                    cfg.cyclesVal = cycle;
+                    if (isInStableState == true)
+                    {
+                        break;
+                    }
                     Debug.WriteLine($"Cycle  ** {cycle} ** Stability: {isInStableState}");
 
                     //
                     // This trains the layer on input pattern.
+                    cfg.count = 0;
                     foreach (var input in inputs)
                     {
+                        
                         double similarity;
-
                         // Learn the input pattern.
                         // Output lyrOut is the output of the last module in the layer.
                         // 
@@ -190,9 +200,10 @@ namespace NeoCortexApiSample
                         similarity = MathHelpers.CalcArraySimilarity(activeColumns, prevActiveCols[input]);
 
                         Debug.WriteLine($"[cycle={cycle.ToString("D4")}, i={input}, cols=:{actCols.Length} s={similarity}] SDR: {Helpers.StringifyVector(actCols)}");
-                        writer.WriteLine($"{cycle.ToString("D4")}:{isInStableState}:{input},{actCols.Length}:{similarity}:{Helpers.StringifyVector(actCols)}");
+                        writer.WriteLine($"{cycle.ToString("D4")}:{isInStableState}:{input}:{actCols.Length}:{similarity}:{Helpers.StringifyVector(actCols)}");
                         prevActiveCols[input] = activeColumns;
                         prevSimilarity[input] = similarity;
+                        cfg.count ++;
                     }
                 }
             }
