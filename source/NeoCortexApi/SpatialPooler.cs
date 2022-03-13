@@ -532,14 +532,14 @@ namespace NeoCortexApi
                     using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                     FileMode.Create, FileAccess.Write)))
                     {
-                        writer.WriteLine("sep=:");
-                        writer.WriteLine("Input: OverlapDutyCycles: ActiveDutyCycles");
+                       // writer.WriteLine("sep=:");
+                        writer.WriteLine("Input,OverlapDutyCycles,ActiveDutyCycles");
                         //var numbersAndWords = overlapFrequencies.Zip(activeColFrequencies, c.HtmConfig.OverlapDutyCycles, c.HtmConfig.ActiveDutyCycles, (of,af,oc,ac ) => new { overlapFrequencie = of, activeColFrequencie = af, OverlapDutyCycles =oc, ActiveDutyCycles = ac});
                         //var OandAFrequencies = overlapFrequencies.Zip(activeColFrequencies, (n, w) => new { overlapFrequencie = n, activeColFrequencie = w });
                         var OandACycles = c.HtmConfig.OverlapDutyCycles.Zip(c.HtmConfig.ActiveDutyCycles, (n, w) => new { OverlapDutyCycles = n, ActiveDutyCycles = w });
                         foreach (var nw in OandACycles)
                         {
-                            writer.WriteLine($"{c.HtmConfig.count}:{nw.OverlapDutyCycles}: {nw.ActiveDutyCycles}");
+                            writer.WriteLine($"{c.HtmConfig.count},{nw.OverlapDutyCycles},{nw.ActiveDutyCycles}");
                         }
                     }
                 }
@@ -551,7 +551,7 @@ namespace NeoCortexApi
                     var OandACycles = c.HtmConfig.OverlapDutyCycles.Zip(c.HtmConfig.ActiveDutyCycles, (n, w) => new { OverlapDutyCycles = n, ActiveDutyCycles = w });
                     foreach (var nw in OandACycles)
                     {
-                        writer.WriteLine($"{c.HtmConfig.count}:{nw.OverlapDutyCycles}: {nw.ActiveDutyCycles}");
+                        writer.WriteLine($"{c.HtmConfig.count},{nw.OverlapDutyCycles},{nw.ActiveDutyCycles}");
                     }
                 }
                 }
@@ -1311,13 +1311,13 @@ namespace NeoCortexApi
                 using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                 FileMode.Create, FileAccess.Write)))
                 {
-                    writer.WriteLine("sep=:");
-                    writer.WriteLine("Input: activeDutyCycles: boostFactors");
+                    //writer.WriteLine("sep=:");
+                    writer.WriteLine("Input,activeDutyCycles,boostFactors");
            
                     var OandBValues = activeDutyCycles.Zip(boostFactors, (n, w) => new { activeDutyCycle = n, boostFactor = w });
                     foreach (var nw in OandBValues)
                     {
-                        writer.WriteLine($"{c.HtmConfig.count}:{nw.activeDutyCycle}: {nw.boostFactor}");
+                        writer.WriteLine($"{c.HtmConfig.count},{nw.activeDutyCycle}, {nw.boostFactor}");
                     }
 
                 }
@@ -1330,7 +1330,7 @@ namespace NeoCortexApi
                     var OandBValues = activeDutyCycles.Zip(boostFactors, (n, w) => new { activeDutyCycle = n, boostFactor = w });
                     foreach (var nw in OandBValues)
                     {
-                        writer.WriteLine($"{c.HtmConfig.count}:{nw.activeDutyCycle}: {nw.boostFactor}");
+                        writer.WriteLine($"{c.HtmConfig.count},{nw.activeDutyCycle}, {nw.boostFactor}");
                     }
                 }
             }
