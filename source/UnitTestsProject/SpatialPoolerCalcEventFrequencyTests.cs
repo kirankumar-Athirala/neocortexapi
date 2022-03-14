@@ -67,7 +67,7 @@ namespace UnitTestsProject
             double[] newvalues = new double[10];
             int period = 500;
             double[] newDutyCycles = SpatialPooler.CalcEventFrequency(dutycycles, newvalues, period);
-            double[] expectedDutyCycles = new double[] { 499, 499, 499, 499, 499, 499, 499, 499, 499, 499 };
+            double[] expectedDutyCycles = new double[] { 998, 998, 998, 998, 998, 998, 998, 998, 998, 998 };
             Assert.IsTrue(expectedDutyCycles.SequenceEqual(newDutyCycles));
         }
         /**
