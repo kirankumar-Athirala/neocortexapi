@@ -132,7 +132,7 @@ namespace UnitTestsProject
 
             mem.HtmConfig.SynPermBelowStimulusInc = 0.02;
             mem.HtmConfig.SynPermTrimThreshold = 0.01;
-            mem.HtmConfig.OverlapDutyCycles = new double[] { 0, 0.009, 0.1, 0.001, 0.002 };
+            mem.HtmConfig.OverlapDutyCycles = new double[]    { 0, 0.009, 0.1, 0.001, 0.002 };
             mem.HtmConfig.MinOverlapDutyCycles = new double[] { .01, .01, .01, .01, .01 };
 
 
@@ -141,7 +141,7 @@ namespace UnitTestsProject
                 new int[] { 1, 1, 1, 1, 0, 0, 0, 0, 1, 1 },
                 new int[] { 1, 0, 0, 0, 1, 1, 0, 1, 1, 1 },
                 new int[] { 0, 0, 1, 0, 1, 1, 1, 0, 0, 0 },
-                new int[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0 },
+                new int[] { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
                 new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
             };
 

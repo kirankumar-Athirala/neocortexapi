@@ -108,10 +108,10 @@ namespace UnitTestsProject
             mem.HtmConfig.ActiveDutyCycles = activeDutyCycles;
 
             double[] BoostFactors = new double[10];
-            ArrayUtils.InitArray(BoostFactors, 0.5);
+            ArrayUtils.InitArray(BoostFactors, 1);
             mem.BoostFactors = BoostFactors;
 
-            double[] ExpectedBoostFactors = new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
+            double[] ExpectedBoostFactors = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
             sp.UpdateBoostFactors(mem);
             Assert.IsTrue(mem.BoostFactors.SequenceEqual(ExpectedBoostFactors));
         }
