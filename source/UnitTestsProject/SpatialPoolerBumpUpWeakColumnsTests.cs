@@ -99,7 +99,6 @@ namespace UnitTestsProject
             {
                 int[] indexes = ArrayUtils.IndexWhere(testingPools[i], n => n == 1);
 
-                // int[] indexes = ArrayUtils.where(potentialPools[i], cond);
                 mem.GetColumn(i).SetProximalConnectedSynapsesForTest(mem, indexes);
                 mem.GetColumn(i).SetPermanences(mem.HtmConfig, testingpermanences[i]);
             }
@@ -166,7 +165,6 @@ namespace UnitTestsProject
             {
                 int[] indexes = ArrayUtils.IndexWhere(testingPools[i], n => n == 1);
 
-                // int[] indexes = ArrayUtils.where(potentialPools[i], cond);
                 mem.GetColumn(i).SetProximalConnectedSynapsesForTest(mem, indexes);
                 mem.GetColumn(i).SetPermanences(mem.HtmConfig, testingpermanences[i]);
             }
@@ -232,7 +230,6 @@ namespace UnitTestsProject
             {
                 int[] indexes = ArrayUtils.IndexWhere(testingPools[i], n => n == 1);
 
-                // int[] indexes = ArrayUtils.where(potentialPools[i], cond);
                 mem.GetColumn(i).SetProximalConnectedSynapsesForTest(mem, indexes);
                 mem.GetColumn(i).SetPermanences(mem.HtmConfig, testingpermanences[i]);
             }

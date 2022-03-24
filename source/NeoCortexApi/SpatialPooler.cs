@@ -384,17 +384,45 @@ namespace NeoCortexApi
             {
                 UpdateMinDutyCyclesLocal(c);
             }
-            /*var filepath = "UpdateMinDutyCycles_analysis.csv";
-            string MinOverlapDutyCycles_string = String.Join(",", c.HtmConfig.MinOverlapDutyCycles.Select(x => x.ToString()).ToArray());
-            string MinActiveDutyCycles_string = String.Join(",", c.HtmConfig.MinActiveDutyCycles.Select(x => x.ToString()).ToArray());
+
+            // Creating Csv File to Analyze the Frequencies
+            string CurrentDirectory = System.IO.Directory.GetCurrentDirectory();
+            string FolderName = "UpdateMinDutyCycles";
+            string CurrentDirectoryPath = Path.Join(CurrentDirectory, FolderName);
+            if (!Directory.Exists(CurrentDirectoryPath))
+            {
+                Directory.CreateDirectory(CurrentDirectoryPath);
+            }
+            string filepath = "";
+            string filepath1 = "";
+            if (c.HtmConfig.cyclesVal == 0)
+            {
+                string TempPath = "UpdateMinOverlapDutyCycles_analysis_0" + ".csv";
+                filepath = Path.Join(CurrentDirectoryPath, TempPath);
+
+                string TempPath1 = "UpdateMinActiveDutyCycles_analysis_0" + ".csv";
+                filepath1 = Path.Join(CurrentDirectoryPath, TempPath1);
+            }
+            else
+            {
+                string TempPath = "UpdateMinOverlapDutyCycles_analysis_" + c.HtmConfig.cyclesVal.ToString() + ".csv";
+                filepath = Path.Join(CurrentDirectoryPath, TempPath);
+
+                string TempPath1 = "UpdateMinActiveDutyCycles_analysis_" + c.HtmConfig.cyclesVal.ToString() + ".csv";
+                filepath1 = Path.Join(CurrentDirectoryPath, TempPath1);
+            }
+
             if (!File.Exists(filepath))
             {
                 using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                 FileMode.Create, FileAccess.Write)))
                 {
-                    writer.WriteLine("sep=:");
-                    writer.WriteLine("MinOverlapDutyCycles_string: MinActiveDutyCycles_string");
-                    writer.WriteLine($"{MinOverlapDutyCycles_string}: {MinActiveDutyCycles_string}");
+                    writer.WriteLine("MinOverlapDutyCycles");
+                    
+                    foreach (var value in c.HtmConfig.MinOverlapDutyCycles)
+                    {
+                        writer.WriteLine($"{value}");
+                    }
                 }
             }
             else
@@ -402,9 +430,37 @@ namespace NeoCortexApi
                 using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                 FileMode.Append, FileAccess.Write)))
                 {
-                    writer.WriteLine($"{MinOverlapDutyCycles_string}: {MinActiveDutyCycles_string}");
+
+                    foreach (var value in c.HtmConfig.MinOverlapDutyCycles)
+                    {
+                        writer.WriteLine($"{value}");
+                    }
                 }
-            }*/
+            }
+            if (!File.Exists(filepath1))
+            {
+                using (StreamWriter writer = new StreamWriter(new FileStream(filepath1,
+                FileMode.Create, FileAccess.Write)))
+                {
+                    writer.WriteLine("MinActiveDutyCycles");
+
+                    foreach (var value in c.HtmConfig.MinActiveDutyCycles)
+                    {
+                        writer.WriteLine($"{value}");
+                    }
+                }
+            }
+            else
+            {
+                using (StreamWriter writer = new StreamWriter(new FileStream(filepath1,
+                FileMode.Append, FileAccess.Write)))
+                {
+                    foreach (var value in c.HtmConfig.MinActiveDutyCycles)
+                    {
+                        writer.WriteLine($"{value}");
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -509,7 +565,7 @@ namespace NeoCortexApi
             
             // Creating Csv File to Analyze the Frequencies
             string CurrentDirectory = System.IO.Directory.GetCurrentDirectory();
-            string FolderName = "UpdateDutyCycles"; // $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}"; 
+            string FolderName = "UpdateDutyCycles";
             string CurrentDirectoryPath = Path.Join(CurrentDirectory, FolderName);
             if (!Directory.Exists(CurrentDirectoryPath))
             {
@@ -532,10 +588,7 @@ namespace NeoCortexApi
                     using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                     FileMode.Create, FileAccess.Write)))
                     {
-                       // writer.WriteLine("sep=:");
                         writer.WriteLine("Input,OverlapDutyCycles,ActiveDutyCycles");
-                        //var numbersAndWords = overlapFrequencies.Zip(activeColFrequencies, c.HtmConfig.OverlapDutyCycles, c.HtmConfig.ActiveDutyCycles, (of,af,oc,ac ) => new { overlapFrequencie = of, activeColFrequencie = af, OverlapDutyCycles =oc, ActiveDutyCycles = ac});
-                        //var OandAFrequencies = overlapFrequencies.Zip(activeColFrequencies, (n, w) => new { overlapFrequencie = n, activeColFrequencie = w });
                         var OandACycles = c.HtmConfig.OverlapDutyCycles.Zip(c.HtmConfig.ActiveDutyCycles, (n, w) => new { OverlapDutyCycles = n, ActiveDutyCycles = w });
                         foreach (var nw in OandACycles)
                         {
@@ -555,14 +608,6 @@ namespace NeoCortexApi
                     }
                 }
                 }
-
-            
-
-                
-            //string OverlapDutyCycles_string = String.Join(",", c.HtmConfig.OverlapDutyCycles.Select(x => x.ToString()).ToArray());
-           // string ActiveDutyCycles_string = String.Join(",", c.HtmConfig.ActiveDutyCycles.Select(x => x.ToString()).ToArray());
-            //string overlapArray_string = String.Join(",", overlapFrequencies.Select(x => x.ToString()).ToArray());
-            //string activeArray_string = String.Join(",", activeColFrequencies.Select(x => x.ToString()).ToArray());
 
         }
 
@@ -717,9 +762,26 @@ namespace NeoCortexApi
         {
             // Get columns with too low overlap.
             var weakColumns = c.HtmConfig.Memory.Get1DIndexes().Where(i => c.HtmConfig.OverlapDutyCycles[i] < c.HtmConfig.MinOverlapDutyCycles[i]).ToArray();
-            //string CurrentDirectory = System.IO.Directory.GetCurrentDirectory();
-            // string CurrentDirectoryPath = Path.Join(CurrentDirectory, "BumpUpWeakColumns", $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}");
-            // System.IO.Directory.CreateDirectory(CurrentDirectoryPath);
+
+            // Creating Csv File to Analyze the Frequencies
+            string CurrentDirectory = System.IO.Directory.GetCurrentDirectory();
+            string FolderName = "BumpUpWeakColumns";
+            string CurrentDirectoryPath = Path.Join(CurrentDirectory, FolderName);
+            if (!Directory.Exists(CurrentDirectoryPath))
+            {
+                Directory.CreateDirectory(CurrentDirectoryPath);
+            }
+            string filepath = "";
+            if (c.HtmConfig.cyclesVal == 0)
+            {
+                string TempPath = "BumpUpWeakColumns_analysis_0" + ".csv";
+                filepath = Path.Join(CurrentDirectoryPath, TempPath);
+            }
+            else
+            {
+                string TempPath = "BumpUpWeakColumns_analysis_" + c.HtmConfig.cyclesVal.ToString() + ".csv";
+                filepath = Path.Join(CurrentDirectoryPath, TempPath);
+            }
             for (int i = 0; i < weakColumns.Length; i++)
             {
                 Column col = c.GetColumn(weakColumns[i]);
@@ -727,17 +789,17 @@ namespace NeoCortexApi
                 Pool pool = col.ProximalDendrite.RFPool;
                 double[] perm = pool.GetSparsePermanences();
                 ArrayUtils.RaiseValuesBy(c.HtmConfig.SynPermBelowStimulusInc, perm);
-                string perm_string = String.Join(",", perm.Select(x => x.ToString()).ToArray());
-               /*
-                var filepath = Path.Join(CurrentDirectoryPath, "BumpUpWeakColumns_analysis.csv");
+               
                 if (!File.Exists(filepath))
                 {
                     using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                     FileMode.Create, FileAccess.Write)))
                     {
-                        writer.WriteLine("sep=:");
-                        writer.WriteLine("c.HtmConfig.SynPermBelowStimulusInc: perm");
-                        writer.WriteLine($"{c.HtmConfig.SynPermBelowStimulusInc.ToString()}: {perm_string}");
+                        writer.WriteLine("perm_values");
+                        foreach (var value in perm)
+                        {
+                            writer.WriteLine($"{value}");
+                        }
                     }
                 }
                 else
@@ -745,9 +807,12 @@ namespace NeoCortexApi
                     using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                     FileMode.Append, FileAccess.Write)))
                     {
-                        writer.WriteLine($"{c.HtmConfig.SynPermBelowStimulusInc.ToString()}: {perm_string}");
+                        foreach (var value in perm)
+                        {
+                            writer.WriteLine($"{value}");
+                        }
                     }
-                }*/
+                }
                 int[] indexes = pool.GetSparsePotential();
 
                 UpdatePermanencesForColumnSparse(c, perm, col, indexes, true);
@@ -1311,7 +1376,6 @@ namespace NeoCortexApi
                 using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
                 FileMode.Create, FileAccess.Write)))
                 {
-                    //writer.WriteLine("sep=:");
                     writer.WriteLine("Input,activeDutyCycles,boostFactors");
            
                     var OandBValues = activeDutyCycles.Zip(boostFactors, (n, w) => new { activeDutyCycle = n, boostFactor = w });
@@ -1334,29 +1398,6 @@ namespace NeoCortexApi
                     }
                 }
             }
-            //string activeDutyCycles_string = String.Join(",", activeDutyCycles.Select(x => x.ToString()).ToArray());
-            //string minActiveDutyCycles_string = String.Join(",", minActiveDutyCycles.Select(x => x.ToString()).ToArray());
-            //string idxOfActiveColumns_string = String.Join(",", idxOfActiveColumns.Select(x => x.ToString()).ToArray());
-            //string boostInterim_string = String.Join(",", boostFactors.Select(x => x.ToString()).ToArray());
-            /*var filepath = "UpdateBoostFactors.csv";
-            if (!File.Exists(filepath))
-            {
-                using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
-                FileMode.Create, FileAccess.Write)))
-                {
-                    writer.WriteLine("sep=:");
-                    writer.WriteLine("activeDutyCycles: minActiveDutyCycles: idxOfActiveColumns: boostFactors  ");
-                    writer.WriteLine($"{activeDutyCycles_string}: {minActiveDutyCycles_string}: {idxOfActiveColumns_string}: {boostInterim_string}");
-                }
-            }
-            else
-            {
-                using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
-                FileMode.Append, FileAccess.Write)))
-                {
-                    writer.WriteLine($"{activeDutyCycles_string}: {minActiveDutyCycles_string}: {idxOfActiveColumns_string}: {boostInterim_string}");
-                }
-            }*/
         }
 
 
