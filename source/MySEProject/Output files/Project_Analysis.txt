@@ -1,0 +1,235 @@
+Analyse and Describe Boosting Algorithm
+
+1.Boosting
+  The main idea behing boosting is the SDRs of symbols will use a wider range of cells by making the most active cells less active and the least active cells more active.
+  This is done via scalar multiplication of a boosting matrix over the spatial pooler to change permeances of each cells.
+
+First we need to understand Neocortex
+Neocortex: 
+It is like a sheet of napkin squeezed into a skull just below the dura matter of the skull consisting of all the areas required for cognition.To understand the basis of artificial general intelligence
+we need to decipher the intelligence of neocortex.
+
+It mainly consists of 6 steps
+1. Sparse Distributed Representation
+2. Encoding
+3. Spatial Pooling
+4. Learning
+5. Boosting
+6. Temporal Pooling
+
+By using Spatial Pooling we will do the above 6 steps. So we need to get idea about Spatial Pooling
+
+While going through the document I come to know about what exactly Spatial Poolong is
+
+It is the layer that processes the Spatial features of the input data in HTM Algorithm.
+
+Spatial Pooling Algorithm Important terms
+
+1. Column
+2. Mini-column
+3. Inhibition
+4. Inhinition radius
+5. Active duty cycle
+6. Overlap duty cycle
+7. Receptive field 
+8. Permanence value
+9. Permanence threshold
+10. Synapse
+
+By following this resources I had learned more about Spatial Pooler and Boosting:
+
+1. Boosting by HTM school youtube
+    It is used to help to change the overlap score before the inhibition occurs giving leass active columns a better chance to express themselves
+
+2. Hierarchal Temporal Memory by medium.com webpost
+
+    The main idea is to understand the basic of artificial general intelligence we need to decrypt the intelligence of NeoCortex
+
+As I already mentioned in the above that Neocortex mainly consists of 6 steps
+
+The Human brain majorly consists of the cerebrum, the cerebellum, Limbic System and the Brain Stem. The cerebral cortex is divided into four sections, called “lobes”: the frontal lobe, parietal lobe, occipital lobe, and temporal lobe. Frontal Lobe is associated with reasoning, planning, parts of speech, movement, emotions, and problem solving, Parietal Lobe is associated with movement, orientation, recognition, perception of stimuli. Occipital Lobe is associated with visual processing and Temporal Lobe is associated with perception and recognition of auditory stimuli, memory, and speech. This cerebral cortex is also termed as the Neocortex(newer cortex) regarded as the most recently evolved part of the cortex.The cerebellum is associated with regulation and coordination of movement, posture, and balance. The limbic system, often referred to as the “emotional brain”, is found buried within the cerebrum. This system contains the thalamus, hypothalamus, amygdala, and hippocampus. Underneath the limbic system is the brain stem. This structure is responsible for basic vital life functions such as breathing, heartbeat, and blood pressure.So,the idea of newer intelligence comes from the Neocortex. Neocortex or the cerebrum is a sheet of napkin squeezed into a skull just below the dura matter of the skull consisting of all the lobes.
+
+Vernon Mountcastle proposed a single powerful algorithm implemented by every region of cortex. If you connect regions of cortex together in a suitable hierarchy and provide a stream of input, it will learn about its environment. It’s quiet inside.The brain learns only by learnings, it has no knowledge of itself. To explain it in a simple way lets say that, both auditory cortex and visual cortex are unified by one algorithm. The surprising result is that the ferrets develop functioning visual pathways in the auditory portions of their brains. In other words, they see with brain tissue that normally hears sounds i.e the cortex does something universal that can be applied to any type of sensory or motor system. Similar experiments have been done with other senses and brain regions. For instance, pieces of rat visual cortex can be transplanted around the time of birth to regions where the sense of touch is usually represented. As the rat matures, the transplanted tissue processes touch rather than vision. Cells were not born to specialize in vision or touch or hearing. Human neocortex is every bit as plastic. Adults who are born deaf process visual information in areas that normally become auditory regions. Patterns are all the brain knows about. Brains are pattern machines. It’s not incorrect to express the brain’s functions in terms of hearing or vision, but at the most fundamental level, patterns are the name of the game. No matter how different the activities of various cortical areas may seem from each other, the same basic cortical algorithm is at work. Helen Keller had no sight and no hearing, yet she learned language and became a more skillful writer than most sighted and hearing people. Here was a very intelligent person without two of our main senses, yet the incredible flexibility of the brain allowed her to perceive and understand the world as individuals with all five senses do.
+
+The basic principle of HTM (Hierarchical Temporal Memory)/CLA (Cortical Learning Algorithm) is Temporal Memory i.e the memory of sequences.
+
+Let's see the 6 steps in detail
+
+1.Sparse Distributed Representations: 
+
+   SDRs are the language of brain. The reason why it is termed as Sparse is because of the fact that only few neurons fire when a cognitive task is performed i.e. if you take a snapshot of neurons in the brain,    it is highly likely that you will only see less than 2% neurons in an active state (Experimental evidence of Sparse firing in the neocortex). An SDR consists of thousands of bits where at any point in time a    small percentage of the bits are 1’s and the rest are 0’s. The bits in an SDR correspond to neurons in the brain, a 1 being a relatively active neuron and a 0 being a relatively inactive neuron.
+There are certain properties of SDRs :
+   1.Capacity of SDRs and the probability of mismatches
+   2.Robustness of SDRs and the probability of error with noise
+   3.Reliable classification of a list of SDR vectors
+   4.Unions of SDRs
+   5.Robustness of unions in the presence of noise
+
+2.Encoder:
+
+  The encoder converts the native format of the data into an SDR that can be fed into an HTM system. The encoder is responsible for determining which output bits should be ones, and which should be zeros, for a   given input value in such a way as to capture the important semantic characteristics of the data. Similar input values should produce highly overlapping SDRs.
+
+3.Spatial Pooling:
+
+  Spatial pooling Algorithm is for solving problems to represent the input active neurons (comping from sensory or motor organs) to make that the cortex learn the pattern of sequences. It accepts the input   vector of different sizes and represents it into sparse vectors of same size(It kind of normalises it). The output of the Spatial Pooler represents the mini columns i.e the pyramidal neuron in the cortices.   It posses certain properties like maintaining a fixed sparsity i.e no matter how many bits are on and off in the input the spatial pooler need to maintain the fixed sparsity and to maintain the overlap   properties i.e two similar inputs should produce similar outputs in the columns.
+  The spatial pooler takes the input data and translates the incoming data into active columns
+
+4.Learning:
+  Learning happens only in those columns of the Spatial Pooler which are active. All the connections that are falling in the input space, the permeance value will increase for them i,e the synaptic connection   between them will strengthen while any connections that fall outside of the input space for those the permeance value will be decremented . Learning Spatial Pooler learns better in comparison to the Random   Spatial Pooler
+
+5.Boosting:
+ 
+  In order for a column in a Spatial pooler to exist it should be a winning column i.e the overlap score should be above some threshold value while non-winning columns are inhibited from learning. Only the    winner columns can update their permanence values. Boosting helps to change the overlap score before the inhibition occurs giving less active columns a better chance to express themselves and diminishing    columns that seem overactive
+
+6.Temporal Pooling:
+
+  Temporal Pooling enables us to understand the sequential pattern over time. It learns the sequences of the active column from the Spatial Pooler and predicts what spatial pattern in coming next based on the   temporal context of each input.
+
+SpatialPooler.md - NeoCortexAPI Documentation from project
+	Learning OutCome:
+		Currently the project supports three versions of SP are implemented and considered:
+			Spatial Pooler - single threaded original version without algorithm specific changes.
+			SP-MT multithreaded version - which supports multiple cores on a single machine and
+			SP-Parallel - which supports multicore and multimode calculus of spatial pooler.
+		Steps to execute Spatial Pooler algorithm:
+			1. Initialize Required Parameters using HtmConfig.
+			2. Call Sp Compute Method to execute.
+		The parameters used in HtmConfig are given Below
+			POTENTIAL_RADIUS: Defines the radius in number of input cells visible to column cells. It is important to choose this value, so every input neuron is connected to at                         least a single column. For example, if the input has 50000 bits and the column topology is 500, then you must choose some value larger than 50000/500 > 100.
+			POTENTIAL_PCT: Defines the percent of inputs withing potential radius, which can/should be connected to the column.
+			GLOBAL_INHIBITION: If TRUE global inhibition algorithm will be used. If FALSE local inhibition algorithm will be used.
+			INHIBITION_RADIUS: Defines neighbourhood radius of a column.
+			LOCAL_AREA_DENSITY: Density of active columns inside of local inhibition radius. If set on value < 0, explicit number of active columns (NUM_ACTIVE_COLUMNS_PER_INH_AREA) will be used.
+			NUM_ACTIVE_COLUMNS_PER_INH_AREA: An alternate way to control the density of the active columns. If this value is specified then LOCAL_AREA_DENSITY must be less than                         0, and vice versa.
+			STIMULUS_THRESHOLD: One mini-column is active if its overlap exceeds overlap threshold  of connected synapses.
+			SYN_PERM_INACTIVE_DEC: Decrement step of synapse permanence value withing every inactive cycle. It defines how fast the NeoCortex will forget learned patterns.
+			SYN_PERM_ACTIVE_INC: Increment step of connected synapse during learning process
+			SYN_PERM_CONNECTED: Defines Connected Permanence Threshold  , which is a float value, which must be exceeded to declare synapse as connected.
+			DUTY_CYCLE_PERIOD: Number of iterations. The period used to calculate duty cycles. Higher values make it take longer to respond to changes in boost. Shorter values                         make it more unstable and likely to oscillate.
+			MAX_BOOST: Maximum boost factor of a column.
+		SpatialPooler Algorithm working apporach :
+			1. Starting with an SDR with randomly dispersed connections from each column to the input space, the process begins.
+			A random persistence value between 0 and 1 is assigned to each link between an input bit and an output column. 
+			If the connected persistence threshold p set in the parameter initialization is larger than the connected permanence threshold p, 
+			the input bits connected to the given column are active. If a particular amount of input bits associated to that column are activated in the input space, 
+			that column will be active. With these connections, Spatial Pooler will be able to represent various inputs as SDRs while still preserving the input's semantic                         content.
+			The overlap score of the output columns is used to determine how comparable the information is. The more overlap there is between the two outputs, the closer they                         are.
+		    2. Only the columns with the highest overlap score will be selected as active and permitted to learn, 
+		       while the remaining columns will remain unmodified. The active columns' connections that overlap the input will be strengthened by increasing the synaptic persistence                        value. 
+			Meanwhile, the permanence value of other connections that do not match the input will be reduced.
+		Boosting and Homeostatic plasticity controller:
+			1.Normally, Spatial Pooler will only have a few active columns that represent distinct inputs, or their active duty-cycles will be near to one. 
+			During the whole learning process, other inactive columns will never be active. This means that the output SDR can only explain a limited amount 
+			of information about the input set. More columns will be able to participate in expressing the input space thanks to the boosting technique.
+			2. The boosting approach of Spatial Pooler allows all columns to be used consistently across all patterns.
+			Even though the columns have previously learnt patterns, the boosting process is still active, 
+			causing the Spatial Pooler to forget the input. To address this issue, the Spatial Pooler now includes 
+			a new homeostatic plasticity controller that turns off boosting once the learning has reached a stable state. 
+			The output SDRs of the Spatial Pooler do not change over time, according to the research.
+Improved HTM Spatial Pooler with Homeostatic Plasticity Control -Professor Dobric
+	        Learning OutCome:
+		1. The Spatial Pooler works using mini-columns that are linked to sensory inputs . 
+		   It is in charge of learning spatial patterns by encoding them into a sparse distributed representation (SDR). 
+		   The SDR that was constructed to represent the encoded spatial pattern is then utilized as input for the Temporal Memory (TM) method.
+		2. The TM is in charge of learning sequences from the SDR. The present version of the Spatial Pooler is instable, according to the results of this research. 
+		   Learned patterns will be forgotten and re-learned during the learning process. The Spatial Pooler oscillates between stable and unstable stable, according on the results. 
+		   Furthermore, investigations reveal that the instability is linked to a single pattern rather than a group of patterns.
+		3. The majority of the trials were carried out using 2048 columns. The scalar encoder was utilized in this example to encode input scalar values supplied to the Spatial                    Pooler throughout the learning phase. 
+		   Values ranging from 0 to 100 were utilized as input. Every input value was encoded with 200 bits before being presented to the Spatial Pooler, and each value is encoded                    with 15 non-zero bits.
+		4. The Spatial Pooler method uses a column boosting technique inspired by homeostatic plasticity. 
+		   This process affects the balance of excitation and inhibition in brain cells and is likely vital for maintaining the cortical state of stability. 
+		   Homeostatic plasticity ensures the functional stability of neuronal networks. It balances network excitation and inhibition and coordinates circuit connection changes.
+		5. The Spatial Pooler's boosting keeps track of column activity and ensures that all columns are used consistently throughout all patterns. 
+		   Because this process is active all of the time, it can increase columns that have previously learnt SDRs. 
+		   After then, the Spatial Pooler will "forget" certain learnt patterns for a short time. 
+		   If the SP is shown the lost pattern again, it will begin to learn it again.
+		6. The boosting was disabled by setting DUTY_CYCLE_PERIOD and MAX_BOOST to zero value. These two values disable boosting algorithm in the Spatial Pooler.
+		   Results show that the SP with these parameters produces stable SDRs. The SP learns the pattern and encodes it to SDR in few iterations (typically 2-3) and keeps it                    unchanged
+		   (stable) during the entire life cycle of the SP instance.By following this result, the stable SP can be achieved by disabling of the boosting algorithm.
+		7. Unfortunately, without the boosting mechanism, the SP generates SDR-s with unpredictive number of active mini-columns.
+		8. The further processing of memorized SDR-s will be badly effected if the number of active mini-columns in an SDR for distinct inputs is considerably variable. 
+		   The computation of the overlap between brain cells, synapses, or mini-columns is used in most operations of Hierarchical Temporal Memory . In this situation, 
+		   SDRs with a large number of active columns would statistically yield more overlaps than SDRs with fewer active cells, which is not balanced.
+		9. The parameter NUM_ACTIVE_COLUMNS_PER_INH_AREA defines the percentage of columns in the inhibition area, which will be activated by the encoding of every single input                    pattern. Inspired by theneocortex, this value is typically set on 2% (Hawkins,
+		   Subtei, 2016). By using the global inhibition in these experiments by the entire column set of 2048 columns the SP will generate SDRs with approx. 40 activecolumns.
+		   The boosting mechanism inspired by homeostatic plasticity in neo-cortex solves this problem by consequent boosting of passive minicolumns\and inhibiting too active mini-                   columns.
+		   As long the learning is occurring, the SP will continuously boost mini-columns. Every time the boosting takes a place, some learned patterns (SDRs) might be forgotten,                    and learning will continue when the same pattern appears the next time.
+		10. It may be concluded that the boosting process has an impact on the SP's stability. The SP can reach a stable state,
+		    but SDRs with a drastically different number of active minicolumns will result. If boosting is turned on, the SP will activate mini-columns equitably, but the                                learning will be unstable.
+	        11. Spatial can also benefit from the deactivation of the increase in homeostatic plasticity in the cortical layer L4. 
+	        The specific workings of this system are currently unknown. However, by using what has been learned in this area,
+		a comparable or identical process inside the SP may be implemented. This mechanism already exists in the HTM as boosting and inhibition algorithms that work on the mini-                column level rather than the cell level inside the mini-column.
+	        SP does not use individual cells since it acts on the population of neural cells in mini-columns. Individual cells are more significant in the Temporal Memory algorithm than                 you would think.
+		12. The fundamental concept behind this study is to add an extra algorithm to SP that does not interfere with the present SP method in order to stabilize the SP and maintain                     exploiting the plasticity. 
+		    The Homeostatic Plasticity Controller, a new component, implements the method used by the expanded Spatial Pooler. The controller is "connected" to the Spatial Pooler's                     current implementation. 
+		    The input pattern and related SDR are provided from the SP to the controller after each iteration's computation. The controller keeps the boosting going until the SP                     reaches a stable state, which is measured in repetitions. 
+		    During this period, the SP is in a stage known as "new-born" and will yield outcomes.
+		13. When the SP reaches a stable state, the new algorithm turns off the boosting and informs the application of the change. 
+		    The controller keeps track of how many mini-columns are present in the overall pattern. 
+		    The SP has entered the stable stage when the controller detects that all minicolumns are almost evenly employed and all visible SDRs are encoded with roughly the same                     amount of active mini-columns. 
+	            The SP will then exit the neonatal stage and resume normal operations, albeit without the boosting.
+
+OBSERVATION 1:
+
+Analysed SpatialPatternLearning and found stability with the given configuration and paramaters.
+
+When I started Running the Program I found the program is going to STABLE STATE at [cycle=153, i=82, cols=41, s=100] and the Stability becomes "TRUE"
+
+After some cycles the program again went to UNSTABLE STATE at [cycle=181, i=29, cols=41, s=95.1219512195122] and the stability become "False"
+
+Then again at [cycle=270, i=23, cols=41, s=100] the program went to STABLE STATE and the stability becomes "TRUE" until the program ends.
+
+Conclusion: After the stability becomes "TRUE" the program is Not Stable and again it is going to UNSTABLE STATE[FALSE] state because of weak columns and due to high active columns again the system is coming to STABLE STATE[TRUE}
+
+I am adding Output ScreenShots.
+
+OBSERVATION 2:
+
+Chnaged the Boosting Parameters 
+
+1. double minOctOverlapCycles=2.0
+2. double maxBoost=4.0
+
+When changed these Boosting parameters I had found that the system become stable at [cycle=0153, i=82, cols=:41 s=100] and the stability becomes "True"
+So after the system comes to stable state It again going to Unstable State at [Cycle  ** 182 ** Stability: False] [cycle=0182, i=0, cols=:41 s=100] and again going to Stable state at [cycle=0231, i=36, cols=:41 s=100] and remains in Stable State until the final Iteration.
+
+By comparing with the previous states when we increase the minOctOverlapCycles and decrease maxBoost the system got stable at same point with the previous one but the system went to unstable state at Cycle 182.So by increasing minOctOverlapCycles and decreasing maxBoost the system is going to unstable with an increment of one cycle.But again the system comes to Stable State with the decrement of 50 cycles compared to previous one.
+ 
+Observations:
+1.The time taken to run the complete program is 56:00 mnts
+2.In previous case time taken to run the complete program is 2:00 Hrs
+3.I found that the system became Stable at same position [cycle=0153, i=82, cols=:41 s=100]--Same position occured with the given configuration
+
+So by changing the parameters from double minOctOverlapCycles=1.0 to double minOctOverlapCycles=2.0 and double maxBoost=5.0 to double maxBoost=4.0 the system is stable at same point 
+
+I am adding Output ScreenShots.
+
+OBSERVATION 3:
+
+Changed Boosting Parameters
+
+1. double minOctOverlapCycles=2.0
+2. double maxBoost=8.0
+
+At starting I found that the system is in unstable state and some columns are completely not representing any SDR values and the program is running very slow.
+After completing 40 cycles then the system is representing complete values but in Unstable State and the system speed also increased.
+
+
+I made maxBoost value double of the previous value and started running the SpatialPatternLearning.By comparing with the previous maxBoost value again the System went to Stable State at [cycle=0153, i=82, cols=:41 s=100]
+
+Now the system went to Unstable state at [cycle=0181, i=35, cols=:41 s=95.1219512195122] and remains Unstable until [cycle=0231, i=35, cols=:41 s=100] and again went to Stable State at same cycle compared to previous one [cycle=0231, i=36, cols=:41 s=100]
+
+Nothing have been changed while doubling the Boosting Value to maxBoost=8.0. 
+
+Need to do more changes and observe how the system is performing.
+
+I am adding Output ScreenShots.
+
+
+
+
+
+
+
+
+
