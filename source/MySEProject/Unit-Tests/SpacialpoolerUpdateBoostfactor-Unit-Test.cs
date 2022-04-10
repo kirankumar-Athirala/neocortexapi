@@ -16,138 +16,151 @@ namespace UnitTestsProject
     public class SpatialPoolerUpdateBoostFactorsTest
     {
 
-        private Parameters parameters;
         private SpatialPooler sp;
         private Connections mem;
 
-        public void setupParameters()
+        /// <summary>
+        /// create htmconfig with default parameters required for the unit tests 
+        /// and also create connection instance for spatial pooler intialization
+        /// </summary>
+        private void InitTestSPInstance(int inputbits, int columns)
         {
-            parameters = Parameters.getAllDefaultParameters();
-            parameters.Set(KEY.INPUT_DIMENSIONS, new int[] { 5 });
-            parameters.Set(KEY.COLUMN_DIMENSIONS, new int[] { 5 });
-            parameters.Set(KEY.POTENTIAL_RADIUS, 5);
-            parameters.Set(KEY.POTENTIAL_PCT, 0.5);
-            parameters.Set(KEY.GLOBAL_INHIBITION, false);
-            parameters.Set(KEY.LOCAL_AREA_DENSITY, -1.0);
-            parameters.Set(KEY.NUM_ACTIVE_COLUMNS_PER_INH_AREA, 3.0);
-            parameters.Set(KEY.STIMULUS_THRESHOLD, 0.0);
-            parameters.Set(KEY.SYN_PERM_INACTIVE_DEC, 0.01);
-            parameters.Set(KEY.SYN_PERM_ACTIVE_INC, 0.1);
-            parameters.Set(KEY.SYN_PERM_CONNECTED, 0.1);
-            parameters.Set(KEY.MIN_PCT_OVERLAP_DUTY_CYCLES, 0.1);
-            parameters.Set(KEY.MIN_PCT_ACTIVE_DUTY_CYCLES, 0.1);
-            parameters.Set(KEY.DUTY_CYCLE_PERIOD, 10);
-            parameters.Set(KEY.MAX_BOOST, 10.0);
-            parameters.Set(KEY.RANDOM, new ThreadSafeRandom(42));
-        }
+            var htmConfig = new HtmConfig(new int[] { inputbits }, new int[] { columns })
+            {
+                PotentialRadius = 5,
+                PotentialPct = 0.5,
+                GlobalInhibition = true,
+                LocalAreaDensity = -1,
+                NumActiveColumnsPerInhArea = 3,
+                StimulusThreshold = 0.0,
+                SynPermActiveInc = 0.1,
+                SynPermInactiveDec = 0.01,
+                SynPermConnected = 0.1,
+                MinPctActiveDutyCycles = 0.1,
+                MinPctOverlapDutyCycles = 0.1,
+                DutyCyclePeriod = 10,
+                MaxBoost = 10,
+                Random = new ThreadSafeRandom(42),
+            };
 
-        private void InitTestSPInstance()
-        {
+            mem = new Connections(htmConfig);
             sp = new SpatialPoolerMT();
-            mem = new Connections();
-            parameters.apply(mem);
             sp.Init(mem);
         }
 
-        /**
-         * Testing Boost Factors are updated as per the mathematical formula defined in UpdateBoostFactors method maxboost 10
-         */
+        /// <summary>
+        /// It makes sure that  Boost Factors are updated as per the mathematical formula defined in UpdateBoostFactors method when maxboost is 10
+        /// This test ensures that Boost Factors values are calculated as per the formula and updated accordingly.
+        /// </summary>
         [TestMethod]
         [TestCategory("UnitTest")]
         [TestCategory("Prod")]
         public void testUpdateBoostFactorsB10()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 10 });
-            parameters.setColumnDimensions(new int[] { 10 });
-            parameters.setMaxBoost(10.0);
-            parameters.setRandom(new ThreadSafeRandom(42));
-            InitTestSPInstance();
+            int inpBits = 10;
+            int numCols = 10;
+            InitTestSPInstance(inpBits, numCols);
 
+            mem.HtmConfig.MaxBoost = 10;
             mem.HtmConfig.NumColumns = 10;
 
             double[] minActiveDutyCycles = new double[10];
+            // Intializing minActiveDutyCycles array of size 10 with value 0.1
             ArrayUtils.InitArray(minActiveDutyCycles, 0.1);
             mem.HtmConfig.MinActiveDutyCycles = minActiveDutyCycles;
 
             double[] activeDutyCycles = new double[10];
+            // Intializing activeDutyCycles array of size 10 with value 0.01
             ArrayUtils.InitArray(activeDutyCycles, 0.01);
             mem.HtmConfig.ActiveDutyCycles = activeDutyCycles;
-
+            // Expected Boost Factors values are calculated manually using the formula boost = (1-maxBoost)/minDuty * activeDutyCycle + maxBoost. 
             double[] ExpectedBoostFactors = new double[] { 9.1, 9.1, 9.1, 9.1, 9.1, 9.1, 9.1, 9.1, 9.1, 9.1 };
+            // executing UpdateBoostFactors method with mem connection
             sp.UpdateBoostFactors(mem);
             double[] boostFactors = mem.BoostFactors;
             for (int i = 0; i < boostFactors.Length; i++)
             {
+                // Veriying absolute values of manually calculated Boost Factors vales and Boost Factor values from UpdateBoostFactors method
                 Assert.IsTrue(Math.Abs(ExpectedBoostFactors[i] - boostFactors[i]) <= 0.1D);
             }
         }
-        /**
-         * Testing Boost Factors are not updated when all minActiveDutyCycles are 0
-         */
+
+        /// <summary>
+        /// It makes sure that  Boost Factors are not updated when all minActiveDutyCycles are 0
+        /// This test ensures that Boost Factors values are 1
+        /// </summary>
         [TestMethod]
         [TestCategory("UnitTest")]
         [TestCategory("Prod")]
         public void testUpdateBoostFactorsMDC0()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 10 });
-            parameters.setColumnDimensions(new int[] { 10 });
-            parameters.setMaxBoost(10.0);
-            parameters.setRandom(new ThreadSafeRandom(42));
-            InitTestSPInstance();
+            int inpBits = 10;
+            int numCols = 10;
+            InitTestSPInstance(inpBits, numCols);
+
+            mem.HtmConfig.MaxBoost = 10;
 
             mem.HtmConfig.NumColumns = 10;
 
             double[] minActiveDutyCycles = new double[10];
+            // Intializing minActiveDutyCycles array of size 10 with value 0
             ArrayUtils.InitArray(minActiveDutyCycles, 0);
             mem.HtmConfig.MinActiveDutyCycles = minActiveDutyCycles;
 
             double[] activeDutyCycles = new double[10];
+            // Intializing activeDutyCycles array of size 10 with value 0.1
             ArrayUtils.InitArray(activeDutyCycles, 0.1);
             mem.HtmConfig.ActiveDutyCycles = activeDutyCycles;
 
             double[] BoostFactors = new double[10];
+            // Intializing Boost Factor array of size 10 with value 1.0
             ArrayUtils.InitArray(BoostFactors, 1);
             mem.BoostFactors = BoostFactors;
-
+            // Expected Boost Factors values are same as Boost Factor array values as all minActiveDutyCycles values are 0
             double[] ExpectedBoostFactors = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            // executing UpdateBoostFactors method with mem connection
             sp.UpdateBoostFactors(mem);
+            // Veriying Boost Factors values are unchanged
             Assert.IsTrue(mem.BoostFactors.SequenceEqual(ExpectedBoostFactors));
         }
-        /**
-         *  Testing Boost Factors are updated as per the mathematical formula defined in UpdateBoostFactors method maxboost 1
-         */
+
+        /// <summary>
+        /// It makes sure that  Boost Factors are updated as per the mathematical formula defined in UpdateBoostFactors method when maxboost is 1
+        /// This test ensures that Boost Factors values are calculated as per the formula and updated accordingly.
+        /// </summary>
         [TestMethod]
         [TestCategory("UnitTest")]
         [TestCategory("Prod")]
         public void testUpdateBoostFactorsB1()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 10 });
-            parameters.setColumnDimensions(new int[] { 10 });
-            parameters.setMaxBoost(1.0);
-            parameters.setRandom(new ThreadSafeRandom(42));
-            InitTestSPInstance();
 
+            int inpBits = 10;
+            int numCols = 10;
+            InitTestSPInstance(inpBits, numCols);
+
+            mem.HtmConfig.MaxBoost = 1.0;
             mem.HtmConfig.NumColumns = 10;
 
             double[] minActiveDutyCycles = new double[10];
+            // Intializing minActiveDutyCycles array of size 10 with value 1
             ArrayUtils.InitArray(minActiveDutyCycles, 1);
             mem.HtmConfig.MinActiveDutyCycles = minActiveDutyCycles;
 
             double[] activeDutyCycles = new double[10];
+            // Intializing activeDutyCycles array of size 10 with value 1
             ArrayUtils.InitArray(activeDutyCycles, 1);
             mem.HtmConfig.ActiveDutyCycles = activeDutyCycles;
-
+            // Expected Boost Factors values are calculated manually using the formula boost = (1-maxBoost)/minDuty * activeDutyCycle + maxBoost. 
             double[] ExpectedBoostFactors = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            // executing UpdateBoostFactors method with mem connection
             sp.UpdateBoostFactors(mem);
             double[] boostFactors = mem.BoostFactors;
             for (int i = 0; i < boostFactors.Length; i++)
             {
+                // Veriying absolute values of manually calculated Boost Factors vales and Boost Factor values from UpdateBoostFactors method
                 Assert.IsTrue(Math.Abs(ExpectedBoostFactors[i] - boostFactors[i]) <= 0.1D);
             }
         }
-
+        
     }
 }
