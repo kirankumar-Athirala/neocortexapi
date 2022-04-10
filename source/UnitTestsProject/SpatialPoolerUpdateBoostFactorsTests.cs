@@ -16,36 +16,32 @@ namespace UnitTestsProject
     public class SpatialPoolerUpdateBoostFactorsTest
     {
 
-        private Parameters parameters;
         private SpatialPooler sp;
         private Connections mem;
 
-        public void setupParameters()
-        {
-            parameters = Parameters.getAllDefaultParameters();
-            parameters.Set(KEY.INPUT_DIMENSIONS, new int[] { 5 });
-            parameters.Set(KEY.COLUMN_DIMENSIONS, new int[] { 5 });
-            parameters.Set(KEY.POTENTIAL_RADIUS, 5);
-            parameters.Set(KEY.POTENTIAL_PCT, 0.5);
-            parameters.Set(KEY.GLOBAL_INHIBITION, false);
-            parameters.Set(KEY.LOCAL_AREA_DENSITY, -1.0);
-            parameters.Set(KEY.NUM_ACTIVE_COLUMNS_PER_INH_AREA, 3.0);
-            parameters.Set(KEY.STIMULUS_THRESHOLD, 0.0);
-            parameters.Set(KEY.SYN_PERM_INACTIVE_DEC, 0.01);
-            parameters.Set(KEY.SYN_PERM_ACTIVE_INC, 0.1);
-            parameters.Set(KEY.SYN_PERM_CONNECTED, 0.1);
-            parameters.Set(KEY.MIN_PCT_OVERLAP_DUTY_CYCLES, 0.1);
-            parameters.Set(KEY.MIN_PCT_ACTIVE_DUTY_CYCLES, 0.1);
-            parameters.Set(KEY.DUTY_CYCLE_PERIOD, 10);
-            parameters.Set(KEY.MAX_BOOST, 10.0);
-            parameters.Set(KEY.RANDOM, new ThreadSafeRandom(42));
-        }
 
-        private void InitTestSPInstance()
+        private void InitTestSPInstance(int inputbits, int columns)
         {
+            var htmConfig = new HtmConfig(new int[] { inputbits }, new int[] { columns })
+            {
+                PotentialRadius = 5,
+                PotentialPct = 0.5,
+                GlobalInhibition = true,
+                LocalAreaDensity = -1,
+                NumActiveColumnsPerInhArea = 3,
+                StimulusThreshold = 0.0,
+                SynPermActiveInc = 0.1,
+                SynPermInactiveDec = 0.01,
+                SynPermConnected = 0.1,
+                MinPctActiveDutyCycles = 0.1,
+                MinPctOverlapDutyCycles = 0.1,
+                DutyCyclePeriod = 10,
+                MaxBoost = 10,
+                Random = new ThreadSafeRandom(42),
+            };
+
+            mem = new Connections(htmConfig);
             sp = new SpatialPoolerMT();
-            mem = new Connections();
-            parameters.apply(mem);
             sp.Init(mem);
         }
 
@@ -57,13 +53,11 @@ namespace UnitTestsProject
         [TestCategory("Prod")]
         public void testUpdateBoostFactorsB10()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 10 });
-            parameters.setColumnDimensions(new int[] { 10 });
-            parameters.setMaxBoost(10.0);
-            parameters.setRandom(new ThreadSafeRandom(42));
-            InitTestSPInstance();
+            int inpBits = 10;
+            int numCols = 10;
+            InitTestSPInstance(inpBits, numCols);
 
+            mem.HtmConfig.MaxBoost = 10;
             mem.HtmConfig.NumColumns = 10;
 
             double[] minActiveDutyCycles = new double[10];
@@ -90,12 +84,11 @@ namespace UnitTestsProject
         [TestCategory("Prod")]
         public void testUpdateBoostFactorsMDC0()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 10 });
-            parameters.setColumnDimensions(new int[] { 10 });
-            parameters.setMaxBoost(10.0);
-            parameters.setRandom(new ThreadSafeRandom(42));
-            InitTestSPInstance();
+            int inpBits = 10;
+            int numCols = 10;
+            InitTestSPInstance(inpBits, numCols);
+
+            mem.HtmConfig.MaxBoost = 10;
 
             mem.HtmConfig.NumColumns = 10;
 
@@ -123,13 +116,12 @@ namespace UnitTestsProject
         [TestCategory("Prod")]
         public void testUpdateBoostFactorsB1()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 10 });
-            parameters.setColumnDimensions(new int[] { 10 });
-            parameters.setMaxBoost(1.0);
-            parameters.setRandom(new ThreadSafeRandom(42));
-            InitTestSPInstance();
 
+            int inpBits = 10;
+            int numCols = 10;
+            InitTestSPInstance(inpBits, numCols);
+
+            mem.HtmConfig.MaxBoost = 1.0;
             mem.HtmConfig.NumColumns = 10;
 
             double[] minActiveDutyCycles = new double[10];

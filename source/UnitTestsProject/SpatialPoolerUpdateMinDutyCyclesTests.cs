@@ -19,55 +19,56 @@ namespace UnitTestsProject
         private Parameters parameters;
         private SpatialPooler sp;
         private Connections mem;
+        private bool DefaultFlag = false;
+        private HtmConfig htmConfig;
 
-        public void setupParameters()
-        {
-            parameters = Parameters.getAllDefaultParameters();
-            parameters.Set(KEY.INPUT_DIMENSIONS, new int[] { 5 });
-            parameters.Set(KEY.COLUMN_DIMENSIONS, new int[] { 5 });
-            parameters.Set(KEY.POTENTIAL_RADIUS, 5);
-            parameters.Set(KEY.POTENTIAL_PCT, 0.5);
-            parameters.Set(KEY.GLOBAL_INHIBITION, false);
-            parameters.Set(KEY.LOCAL_AREA_DENSITY, -1.0);
-            parameters.Set(KEY.NUM_ACTIVE_COLUMNS_PER_INH_AREA, 3.0);
-            parameters.Set(KEY.STIMULUS_THRESHOLD, 0.0);
-            parameters.Set(KEY.SYN_PERM_INACTIVE_DEC, 0.01);
-            parameters.Set(KEY.SYN_PERM_ACTIVE_INC, 0.1);
-            parameters.Set(KEY.SYN_PERM_CONNECTED, 0.1);
-            parameters.Set(KEY.MIN_PCT_OVERLAP_DUTY_CYCLES, 0.1);
-            parameters.Set(KEY.MIN_PCT_ACTIVE_DUTY_CYCLES, 0.1);
-            parameters.Set(KEY.DUTY_CYCLE_PERIOD, 10);
-            parameters.Set(KEY.MAX_BOOST, 10.0);
-            parameters.Set(KEY.RANDOM, new ThreadSafeRandom(42));
-        }
-
-        public void setupDefaultParameters()
-        {
-            parameters = Parameters.getAllDefaultParameters();
-            parameters.Set(KEY.INPUT_DIMENSIONS, new int[] { 32, 32 });
-            parameters.Set(KEY.COLUMN_DIMENSIONS, new int[] { 64, 64 });
-            parameters.Set(KEY.POTENTIAL_RADIUS, 16);
-            parameters.Set(KEY.POTENTIAL_PCT, 0.5);
-            parameters.Set(KEY.GLOBAL_INHIBITION, false);
-            parameters.Set(KEY.LOCAL_AREA_DENSITY, -1.0);
-            parameters.Set(KEY.NUM_ACTIVE_COLUMNS_PER_INH_AREA, 10.0);
-            parameters.Set(KEY.STIMULUS_THRESHOLD, 0.0);
-            parameters.Set(KEY.SYN_PERM_INACTIVE_DEC, 0.008);
-            parameters.Set(KEY.SYN_PERM_ACTIVE_INC, 0.05);
-            parameters.Set(KEY.SYN_PERM_CONNECTED, 0.10);
-            parameters.Set(KEY.MIN_PCT_OVERLAP_DUTY_CYCLES, 0.001);
-            parameters.Set(KEY.MIN_PCT_ACTIVE_DUTY_CYCLES, 0.001);
-            parameters.Set(KEY.DUTY_CYCLE_PERIOD, 1000);
-            parameters.Set(KEY.MAX_BOOST, 10.0);
-            parameters.Set(KEY.SEED, 42);
-            parameters.Set(KEY.RANDOM, new ThreadSafeRandom(42));
-        }
 
         private void InitTestSPInstance()
         {
+            if (DefaultFlag == false)
+            {
+                htmConfig = new HtmConfig(new int[] { 5 }, new int[] { 8 })
+                {
+                    PotentialRadius = 5,
+                    PotentialPct = 0.5,
+                    GlobalInhibition = false,
+                    LocalAreaDensity = -1,
+                    NumActiveColumnsPerInhArea = 3,
+                    StimulusThreshold = 0.0,
+                    SynPermActiveInc = 0.1,
+                    SynPermInactiveDec = 0.01,
+                    SynPermConnected = 0.1,
+                    MinPctActiveDutyCycles = 0.1,
+                    MinPctOverlapDutyCycles = 0.1,
+                    DutyCyclePeriod = 10,
+                    MaxBoost = 10,
+                    Random = new ThreadSafeRandom(42),
+                };
+            }
+            else
+            {
+                htmConfig = new HtmConfig(new int[] { 5 }, new int[] { 8 })
+                {
+                    PotentialRadius = 16,
+                    PotentialPct = 0.5,
+                    GlobalInhibition = false,
+                    LocalAreaDensity = -1,
+                    NumActiveColumnsPerInhArea = 10.0,
+                    StimulusThreshold = 0.0,
+                    SynPermActiveInc = 0.05,
+                    SynPermInactiveDec = 0.008,
+                    SynPermConnected = 0.10,
+                    MinPctActiveDutyCycles = 0.001,
+                    MinPctOverlapDutyCycles = 0.001,
+                    DutyCyclePeriod = 1000,
+                    MaxBoost = 10,
+                    RandomGenSeed = 42,
+                    Random = new ThreadSafeRandom(42),
+                };
+                DefaultFlag = false;
+            }
+            mem = new Connections(htmConfig);
             sp = new SpatialPoolerMT();
-            mem = new Connections();
-            parameters.apply(mem);
             sp.Init(mem);
         }
 
@@ -79,11 +80,10 @@ namespace UnitTestsProject
         [TestCategory("Prod")]
         public void testUpdateMinDutyCycleLocalwithoutWrapAround()
         {
-            setupDefaultParameters();
-            parameters.setInputDimensions(new int[] { 5 });
-            parameters.setColumnDimensions(new int[] { 8 });
-            parameters.Set(KEY.WRAP_AROUND, false);
+            DefaultFlag = true;
             InitTestSPInstance();
+
+            mem.HtmConfig.WrapAround = false;
 
             sp.InhibitionRadius = 2;
             mem.HtmConfig.OverlapDutyCycles = new double[] { 0.7, 0.1, 0.5, 0.01, 0.78, 0.55, 0.1, 0.001 };
@@ -116,11 +116,10 @@ namespace UnitTestsProject
         [TestCategory("Prod")]
         public void testUpdateMinDutyCycleLocalwithWrapAround()
         {
-            setupDefaultParameters();
-            parameters.setInputDimensions(new int[] { 5 });
-            parameters.setColumnDimensions(new int[] { 8 });
-            parameters.Set(KEY.WRAP_AROUND, true);
+            DefaultFlag = true;
             InitTestSPInstance();
+
+            mem.HtmConfig.WrapAround = true;
 
             sp.InhibitionRadius = 2;
             mem.HtmConfig.OverlapDutyCycles = new double[] { 0.7, 0.1, 0.5, 0.01, 0.78, 0.55, 0.1, 0.001 };
@@ -153,22 +152,18 @@ namespace UnitTestsProject
         [TestCategory("Prod")]
         public void testUpdateMinDutyCycleGlobal()
         {
-            setupParameters();
-            parameters.setInputDimensions(new int[] { 5 });
-
-            parameters.setColumnDimensions(new int[] { 5 });
             InitTestSPInstance();
 
             mem.HtmConfig.MinPctOverlapDutyCycles = 0.06;
             mem.HtmConfig.MinPctActiveDutyCycles = 0.08;
-            mem.HtmConfig.OverlapDutyCycles = new double[] { 1, 2, 3, 4, 5 };
-            mem.HtmConfig.ActiveDutyCycles = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
+            mem.HtmConfig.OverlapDutyCycles = new double[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            mem.HtmConfig.ActiveDutyCycles = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 };
 
             sp.UpdateMinDutyCyclesGlobal(mem);
             double[] expectedMinActiveDutyCycles = new double[mem.HtmConfig.NumColumns];
-            ArrayUtils.InitArray(expectedMinActiveDutyCycles, 0.08 * 0.5);
+            ArrayUtils.InitArray(expectedMinActiveDutyCycles, 0.08 * 0.8);
             double[] expectedMinOverlapDutyCycles = new double[mem.HtmConfig.NumColumns];
-            ArrayUtils.InitArray(expectedMinOverlapDutyCycles, 0.06 * 5);
+            ArrayUtils.InitArray(expectedMinOverlapDutyCycles, 0.06 * 8);
             for (int i = 0; i < mem.HtmConfig.NumColumns; i++)
             {
                 Assert.IsTrue(Math.Abs(expectedMinOverlapDutyCycles[i] - mem.HtmConfig.MinOverlapDutyCycles[i]) <= 0.01);
