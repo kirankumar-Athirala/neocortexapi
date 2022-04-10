@@ -16,13 +16,15 @@ namespace UnitTestsProject
     public class SpatialPoolerUpdateMinDutyCyclesTest
     {
 
-        private Parameters parameters;
         private SpatialPooler sp;
         private Connections mem;
         private bool DefaultFlag = false;
         private HtmConfig htmConfig;
 
-
+        /// <summary>
+        /// create htmconfig with default parameters required for the unit tests 
+        /// and also create connection instance for spatial pooler intialization
+        /// </summary>
         private void InitTestSPInstance()
         {
             if (DefaultFlag == false)
@@ -72,9 +74,10 @@ namespace UnitTestsProject
             sp.Init(mem);
         }
 
-        /**
-         * Testing Min Duty cycles are updated as per the mathematical formula defined in UpdateMinDutyCycleLocal without wrap around
-         */
+        /// <summary>
+        /// It makes sure that Min Duty cycles are updated as per the mathematical formula defined in UpdateMinDutyCyclesLocal method when wrap around is false
+        /// This test ensures that Min Duty cycles values are calculated as per the formula and updated accordingly.
+        /// </summary>
         [TestMethod]
         [TestCategory("UnitTest")]
         [TestCategory("Prod")]
@@ -90,27 +93,34 @@ namespace UnitTestsProject
             mem.HtmConfig.ActiveDutyCycles = new double[] { 0.9, 0.3, 0.5, 0.7, 0.1, 0.01, 0.08, 0.12 };
             mem.HtmConfig.MinPctActiveDutyCycles = 0.1;
             mem.HtmConfig.MinPctOverlapDutyCycles = 0.2;
+            // executing UpdateMinDutyCyclesLocal method with mem connection
             sp.UpdateMinDutyCyclesLocal(mem);
-
+            // calculated MinActiveDutyCycle values from the spatialpooler UpdateMinDutyCyclesLocal method
             double[] resultantMinActiveDutyCycles = mem.HtmConfig.MinActiveDutyCycles;
+            // Expected minactivedutycycles values calculated manually as described MinPctActiveDutyCycles * Maximal Active Duty Cycles in the cortical column when wrap around is false.
             double[] expectedactivedutycycles = { 0.09, 0.09, 0.09, 0.07, 0.07, 0.07, 0.012, 0.012 };
 
             for (var i = 0; i < expectedactivedutycycles.Length; i++)
             {
+                // Veriying absolute values of manually calculated minactivedutycycles vales and activedutycycles values from UpdateMinDutyCyclesLocal method
                 Assert.IsTrue(Math.Abs(expectedactivedutycycles[i] - resultantMinActiveDutyCycles[i]) <= 0.01);
             }
-
+            // calculated minOverlapDutyCycles values from the spatialpooler UpdateMinDutyCyclesLocal method
             double[] resultMinOverlapDutyCycles = mem.HtmConfig.MinOverlapDutyCycles;
+            // Expected minactivedutycycles values calculated manually as described MinPctOverlapDutyCycles * Maximal Overlap in the cortical column when wrap around is false.
             double[] expectedoverlapdutycycles = new double[] { 0.14, 0.14, 0.156, 0.156, 0.156, 0.156, 0.156, 0.11 };
 
             for (var i = 0; i < expectedoverlapdutycycles.Length; i++)
             {
+                // Veriying absolute values of manually calculated overlapdutycycles vales and overlapdutycycles values from UpdateMinDutyCyclesLocal method
                 Assert.IsTrue(Math.Abs(expectedoverlapdutycycles[i] - resultMinOverlapDutyCycles[i]) <= 0.01);
             }
         }
-        /**
-         * Testing Min Duty cycles are updated as per the mathematical formula defined in UpdateMinDutyCycleLocal with wraparound
-         */
+
+        /// <summary>
+        /// It makes sure that Min Duty cycles are updated as per the mathematical formula defined in UpdateMinDutyCyclesLocal method when wrap around is TRUE
+        /// This test ensures that Min Duty cycles values are calculated as per the formula and updated accordingly.
+        /// </summary>
         [TestMethod]
         [TestCategory("UnitTest")]
         [TestCategory("Prod")]
@@ -126,27 +136,34 @@ namespace UnitTestsProject
             mem.HtmConfig.ActiveDutyCycles = new double[] { 0.9, 0.3, 0.5, 0.7, 0.1, 0.01, 0.08, 0.12 };
             mem.HtmConfig.MinPctActiveDutyCycles = 0.1;
             mem.HtmConfig.MinPctOverlapDutyCycles = 0.2;
+            // executing UpdateMinDutyCyclesLocal method with mem connection
             sp.UpdateMinDutyCyclesLocal(mem);
-
+            // calculated MinActiveDutyCycle values from the spatialpooler UpdateMinDutyCyclesLocal method
             double[] resultantMinActiveDutyCycles = mem.HtmConfig.MinActiveDutyCycles;
+            // Expected minactivedutycycles values calculated manually as described MinPctActiveDutyCycles * Maximal Active Duty Cycles in the cortical column when wrap around is true.
             double[] expectedactivedutycycles = { 0.09, 0.09, 0.09, 0.07, 0.07, 0.07, 0.09, 0.09 };
 
             for (var i = 0; i < expectedactivedutycycles.Length; i++)
             {
+                // Veriying absolute values of manually calculated minactivedutycycles vales and minactivedutycycles values from UpdateMinDutyCyclesLocal method
                 Assert.IsTrue(Math.Abs(expectedactivedutycycles[i] - resultantMinActiveDutyCycles[i]) <= 0.01);
             }
-
+            // calculated minOverlapDutyCycles values from the spatialpooler UpdateMinDutyCyclesLocal method
             double[] resultMinOverlapDutyCycles = mem.HtmConfig.MinOverlapDutyCycles;
+            // Expected minactivedutycycles values calculated manually as described MinPctOverlapDutyCycles * Maximal Overlap in the cortical column when wrap around is true.
             double[] expectedoverlapdutycycles = new double[] { 0.14, 0.14, 0.156, 0.156, 0.156, 0.156, 0.156, 0.14 };
 
             for (var i = 0; i < expectedoverlapdutycycles.Length; i++)
             {
+                // Veriying absolute values of manually calculated minoverlapdutycycles vales and minoverlapdutycycles values from UpdateMinDutyCyclesLocal method
                 Assert.IsTrue(Math.Abs(expectedoverlapdutycycles[i] - resultMinOverlapDutyCycles[i]) <= 0.01);
             }
         }
-        /**
-         * Testing duty cycles are updated as per the mathematical formula defined in CalcEventFrequency method with period 1
-         */
+
+        /// <summary>
+        /// It makes sure that Min Duty cycles are updated as per the mathematical formula defined in UpdateMinDutyCyclesGlobal method
+        /// This test ensures that Min Duty cycles values are calculated as per the formula and updated accordingly.
+        /// </summary>
         [TestMethod]
         [TestCategory("UnitTest")]
         [TestCategory("Prod")]
@@ -158,15 +175,20 @@ namespace UnitTestsProject
             mem.HtmConfig.MinPctActiveDutyCycles = 0.08;
             mem.HtmConfig.OverlapDutyCycles = new double[] { 1, 2, 3, 4, 5, 6, 7, 8 };
             mem.HtmConfig.ActiveDutyCycles = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 };
-
+            // executing UpdateMinDutyCyclesGlobal method with mem connection
             sp.UpdateMinDutyCyclesGlobal(mem);
+            // Expected minactivedutycycles values calculated manually as described  MinPctActiveDutyCycles * Maximal Active Duty Cycles in the cortical column.
             double[] expectedMinActiveDutyCycles = new double[mem.HtmConfig.NumColumns];
+            // Intializing MinactiveDutyCycles array of size 8 with value MinPctActiveDutyCycles * Maximal Active Duty Cycles
             ArrayUtils.InitArray(expectedMinActiveDutyCycles, 0.08 * 0.8);
             double[] expectedMinOverlapDutyCycles = new double[mem.HtmConfig.NumColumns];
+            // Intializing MinOverlapDutyCycles array of size 8 with value MinPctMinOverlapDutyCycles * Maximal Active Duty Cycles
             ArrayUtils.InitArray(expectedMinOverlapDutyCycles, 0.06 * 8);
             for (int i = 0; i < mem.HtmConfig.NumColumns; i++)
             {
+                // Veriying absolute values of manually calculated minoverlapdutycycles vales and minoverlapdutycycles values from UpdateMinDutyCyclesGlobal method
                 Assert.IsTrue(Math.Abs(expectedMinOverlapDutyCycles[i] - mem.HtmConfig.MinOverlapDutyCycles[i]) <= 0.01);
+                // Veriying absolute values of manually calculated minactivedutycycles vales and minactivedutycycles values from UpdateMinDutyCyclesLocal method
                 Assert.IsTrue(Math.Abs(expectedMinActiveDutyCycles[i] - mem.HtmConfig.MinActiveDutyCycles[i]) <= 0.01);
             }
         }
